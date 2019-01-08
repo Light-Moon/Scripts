@@ -2,6 +2,10 @@
 user=dfs1
 group=dfs1
 keytab_path=/etc/security/keytabs
+user_root_path=/home/${user}
+component_name=ctdfs
+default_package_path=/apps/dfs/ctdfs.tar.gz
+default_compressed_package_name=ctdfs.tar.gz
 
 #create group if not exists
 egrep "^${group}:" /etc/group >& /dev/null
@@ -16,7 +20,6 @@ fi
 #create user if not exists
 user_infos=`cat /etc/passwd|grep ^${user}:`
 echo ${user_infos}
-user_root_path=/home/${user}
 if [ -z "${user_infos}" ]; then
     echo "user of ${user} is not exist!"
 	useradd -g ${group} -d ${user_root_path} -m ${user}
@@ -35,8 +38,6 @@ fi
 kerberos_username=hbase/admin
 kerberos_password=root
 keytab_name=${user}.service.keytab
-package_name=ctdfs
-package_hdfs_path=/apps/dfs
 domain_name=`hostname -f`
 `/usr/bin/kadmin -p ${kerberos_username} -w ${kerberos_password} -q 'ank -randkey ${user}/${domain_name}'`
 `/usr/bin/kadmin -p ${kerberos_username} -w ${kerberos_password} -q 'xst -k ${keytab_path}/${keytab_name} ${user}/${domain_name}'
@@ -46,7 +47,15 @@ echo "0 0 * * * /usr/bin/kinit -k -t ${keytab_path}/${keytab_name} ${user}/${dom
 `chmod 644 ${keytab_path}/${keytab_name}`
 `su ${user}`
 `/usr/bin/kinit -k -t ${keytab_path}/${keytab_name} ${user}/${domain_name}`
-`hadoop fs -get ${package_hdfs_path}/${package_name} ${user_root_path}`
+if [-n "$1"]; then
+	${default_package_path}=$1
+	${default_compressed_package_name}=${1##*/}
+fi
+if [ -d "${user_root_path}/${component_name}" ]; then
+	mv ${user_root_path}/${component_name} ${user_root_path}/${component_name}$(date +%Y%m%d%H%M%S)
+fi	
+`hadoop fs -get ${default_package_path} ${user_root_path}`
+`tar -xvzf ${user_root_path}/${default_compressed_package_name} ${user_root_path}/${component_name}`
 if [ ${user} == `whoami`]; then
 	`exit`
 fi
@@ -65,7 +74,7 @@ hbase_sub_principal=klist -k ${keytab_path}/${hbase_keytab_name} | sed -n 4p | a
 #TODO:修改run.sh config.sh配置文件
 java_home=echo `which java` | xargs ls -l | awk -F '->' '{print $2}' | xargs ls -l | awk -F '->' '{print $2}' | awk -F '/bin' '{print $1}'
 #因路径中有/和默认分隔符冲突故自定义分隔符
-sed -i 's:JAVA_HOME=null:JAVA_HOME=${java_home}:g' ${user_root_path}/${package_name}/conf/config.sh
+sed -i 's:JAVA_HOME=null:JAVA_HOME=${java_home}:g' ${user_root_path}/${component_name}/conf/config.sh
 
 #TODO:dfsadmin -init xxx.keytab
 
