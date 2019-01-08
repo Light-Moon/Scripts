@@ -39,14 +39,14 @@ kerberos_username=hbase/admin
 kerberos_password=root
 keytab_name=${user}.service.keytab
 domain_name=`hostname -f`
-`/usr/bin/kadmin -p ${kerberos_username} -w ${kerberos_password} -q 'ank -randkey ${user}/${domain_name}'`
-`/usr/bin/kadmin -p ${kerberos_username} -w ${kerberos_password} -q 'xst -k ${keytab_path}/${keytab_name} ${user}/${domain_name}'
-echo "0 0 * * * /usr/bin/kinit -k -t ${keytab_path}/${keytab_name} ${user}/${domain_name}" >>/var/spool/cron/${user}
-`crontab /var/spool/cron/${user}`
-`chown ${user}:${user} /var/spool/cron/${user}`&&`chmod 644 /var/spool/cron/${user}`
-`chmod 644 ${keytab_path}/${keytab_name}`
+#`/usr/bin/kadmin -p ${kerberos_username} -w ${kerberos_password} -q 'ank -randkey ${user}/${domain_name}'`
+#`/usr/bin/kadmin -p ${kerberos_username} -w ${kerberos_password} -q 'xst -k ${keytab_path}/${keytab_name} ${user}/${domain_name}'
+#echo "0 0 * * * /usr/bin/kinit -k -t ${keytab_path}/${keytab_name} ${user}/${domain_name}" >>/var/spool/cron/${user}
+#`crontab /var/spool/cron/${user}`
+#`chown ${user}:${user} /var/spool/cron/${user}`&&`chmod 644 /var/spool/cron/${user}`
+#`chmod 644 ${keytab_path}/${keytab_name}`
 `su ${user}`
-`/usr/bin/kinit -k -t ${keytab_path}/${keytab_name} ${user}/${domain_name}`
+#`/usr/bin/kinit -k -t ${keytab_path}/${keytab_name} ${user}/${domain_name}`
 if [-n "$1"]; then
 	${default_package_path}=$1
 	${default_compressed_package_name}=${1##*/}
