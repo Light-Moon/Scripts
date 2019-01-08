@@ -16,7 +16,7 @@
             <components>
                 <!-- Master-->
                 <component>
-                    <name>MASTER</name>
+                    <name>MY_MASTER</name>
                     <displayName>DFS_TEST_MASTER</displayName>
                     <category>MASTER</category>
                     <cardinality>1+</cardinality>
@@ -28,7 +28,7 @@
                 </component>
                 <!-- Slave-->
                 <component>
-                    <name>SLAVE</name>
+                    <name>MY_SLAVE</name>
                     <displayName>DFS_TEST_SLAVE</displayName>
                     <category>SLAVE</category>
                     <cardinality>1+</cardinality>
@@ -40,7 +40,7 @@
 					<dependencies>CLIENT</dependencies>
                 </component>
                 <component>
-                    <name>CLIENT</name>
+                    <name>MY_CLIENT</name>
                     <displayName>DFS_TEST_CLIENT</displayName>
                     <category>CLIENT</category>
                     <cardinality>1+</cardinality>
@@ -49,22 +49,12 @@
                         <scriptType>PYTHON</scriptType>
                         <timeout>600</timeout>
                     </commandScript>
-					<configFiles>
-						<configFile>
-						  <type>xml</type>
-						  <fileName>dfs-site.xml</fileName>
-						  <dictionaryName>dfs-site</dictionaryName>
-						</configFile>
-					</configFiles>
                 </component>
             </components>           
 			<!-- set configuration file-->
             <configuration-dependencies>
                 <config-type>dfs-site</config-type>
             </configuration-dependencies>
-			<!--
-            <restartRequiredAfterChange>true</restartRequiredAfterChange> 
-			-->
             <osSpecifics>
                 <osSpecific>
                     <osFamily>any</osFamily>  
