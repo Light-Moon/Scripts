@@ -1,0 +1,76 @@
+<?xml version="1.0"?>
+<metainfo>
+    <schemaVersion>2.0</schemaVersion>
+    <services>
+        <service>
+            <!-- Service-->
+            <name>DFS_TEST</name>
+            <displayName>DFS_TEST</displayName>
+            <comment>A New Sample Service</comment>
+            <version>1.0.0</version>
+			<requiredServices>
+				<service>HDFS</service>
+				<service>HBASE</service>
+				<service>ZOOKEEPER</service>
+			</requiredServices>
+            <components>
+                <!-- Master-->
+                <component>
+                    <name>MASTER</name>
+                    <displayName>DFS_TEST_MASTER</displayName>
+                    <category>MASTER</category>
+                    <cardinality>1+</cardinality>
+                    <commandScript>
+                        <script>scripts/master.py</script>
+                        <scriptType>PYTHON</scriptType>
+                        <timeout>600</timeout>
+                    </commandScript>
+                </component>
+                <!-- Slave-->
+                <component>
+                    <name>SLAVE</name>
+                    <displayName>DFS_TEST_SLAVE</displayName>
+                    <category>SLAVE</category>
+                    <cardinality>1+</cardinality>
+                    <commandScript>
+                        <script>scripts/slave.py</script>
+                        <scriptType>PYTHON</scriptType>
+                        <timeout>600</timeout>
+                    </commandScript>
+					<dependencies>CLIENT</dependencies>
+                </component>
+                <component>
+                    <name>CLIENT</name>
+                    <displayName>DFS_TEST_CLIENT</displayName>
+                    <category>CLIENT</category>
+                    <cardinality>1+</cardinality>
+                    <commandScript>
+                        <script>scripts/client.py</script>
+                        <scriptType>PYTHON</scriptType>
+                        <timeout>600</timeout>
+                    </commandScript>
+					<configFiles>
+						<configFile>
+						  <type>xml</type>
+						  <fileName>dfs-site.xml</fileName>
+						  <dictionaryName>dfs-site</dictionaryName>
+						</configFile>
+					</configFiles>
+                </component>
+            </components>           
+			<!-- set configuration file-->
+            <configuration-dependencies>
+                <config-type>dfs-site</config-type>
+            </configuration-dependencies>
+			<!--
+            <restartRequiredAfterChange>true</restartRequiredAfterChange> 
+			-->
+            <osSpecifics>
+                <osSpecific>
+                    <osFamily>any</osFamily>  
+					<!-- note: use osType rather than osFamily for Ambari 1.5.0 and 1.5.1 -->
+                </osSpecific>
+            </osSpecifics>
+        </service>
+    </services>
+</metainfo>
