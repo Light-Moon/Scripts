@@ -9,36 +9,39 @@ from resource_management.libraries.script.script import Script
 from xml_utils import write_xml
 
 class Master(Script):
-    dfs_conf_dir = '/apps/dfs'
     def install(self, env):
-        print 'Install My Master';
+        print 'Install DFS_MASTER';
+        current_path = os.getcwd()
+        scripts_path = current_path + '/cache/stacks/HDP/2.5/services/DFS_TEST/package/scripts'
+        status,output = commands.getstatusoutput("${scripts_path}/dfs-deploy.sh >> ${scripts_path}/dfs-deploy.log")
+        print 'install status code: ', status
+        print 'install output: ', output
     def stop(self, env):
-        status,output = commands.getstatusoutput("ls /")
-        print 'status code: ', status
-        print 'output: ', output
-        Execute('rm -f /apps/dfs/dfs.pid')
-        print "Stop My Master"
+        print "Stop DFS_MASTER"
     def start(self, env):
-        status,output = commands.getstatusoutput("ls ~")
-        print 'status code: ', status
-        print 'output: ', output
+        # status,user_infos=commands.getstatusoutput("cat /etc/passwd|grep ^dfs:")
+        status,user_infos=commands.getstatusoutput("cat /etc/passwd|grep ^autodfs:")
+        substr=commands.getoutput("${user_infos##*::}")
+        user_root_path=commands.getoutput("${substr%%:*}")
+        dfs_conf_dir = '${user_root_path}/ctdfs/conf'
         config = Script.get_config()
         current_path = os.getcwd()
         conf_dir = current_path + '/cache/stacks/HDP/2.5/services/DFS_TEST/configuration'
         if not os.path.isdir(conf_dir):
            # os.mkdir(conf_dir)   
-            Directory([conf_dir],mode=0755,owner='dfs',group='dfs',create_parents=True) 
+           # Directory([conf_dir],mode=0755,owner='dfs',group='dfs',create_parents=True) 
+            Directory([conf_dir],mode=0755,owner='autodfs',group='autodfs',create_parents=True) 
         filenames = ['dfs-site.xml']
         for filename in filenames:
             file_path = conf_dir + '/' + filename
             if not os.path.isfile(file_path):
                # f = open(file_path, 'w')
                # f.close()
-                File([file_path],mode=0755,owner='dfs',group='dfs')
+                File([file_path],mode=0755,owner='autodfs',group='autodfs')
             prefix_filename = filename[:-4]
             dict = config['configurations'][prefix_filename]
             write_xml(dict, file_path)
-            dfs_file_path = Master.dfs_conf_dir + '/' + filename
+            dfs_file_path = dfs_conf_dir + '/' + filename
             if not os.path.isfile(dfs_file_path):
                 ln_cmd = 'ln -s ' + file_path + ' ' + dfs_file_path
                 status,output = commands.getstatusoutput(ln_cmd)
@@ -60,11 +63,11 @@ class Master(Script):
        # print 'tmp: ', tmp
        # File(['/apps/dfs/zql.xml'],mode=0755,owner='dfs',group='dfs',content='zzzzz')
        # Directory(['/apps/dfs/zql/dir1'],mode=0755,owner='dfs',group='dfs',create_parents=True)
-        print "Start My Master"
+        print "Start DFS_MASTER"
     def status(self, env):
         pid =  format ("/apps/dfs/dfs.pid")
         check_process_status(pid)
-        print 'Status of the My Master';
+        print 'Status of the DFS_MASTER';
     def configure(self, env):
         print 'Configure the Sample Srv Master';
 if __name__ == "__main__":
