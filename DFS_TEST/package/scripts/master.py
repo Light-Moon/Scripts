@@ -1,12 +1,12 @@
 import sys,os
 import commands
-import xmlUtils
+import xml_utils
 from resource_management import *
 from resource_management.core.exceptions import ComponentIsNotRunning
 from resource_management.core.environment import Environment
 from resource_management.core.logger import Logger
 from resource_management.libraries.script.script import Script
-from xmlUtils import write_xml
+from xml_utils import write_xml
 
 class Master(Script):
     dfs_conf_dir = '/apps/dfs'
@@ -23,8 +23,8 @@ class Master(Script):
         print 'status code: ', status
         print 'output: ', output
         config = Script.get_config()
-        script_path = os.getcwd()
-        conf_dir = script_path + '/../../configuration'
+        current_path = os.getcwd()
+        conf_dir = current_path + '/cache/stacks/HDP/2.5/services/DFS_TEST/configuration'
         if not os.path.isdir(conf_dir):
            # os.mkdir(conf_dir)   
             Directory([conf_dir],mode=0755,owner='dfs',group='dfs',create_parents=True) 
@@ -38,10 +38,10 @@ class Master(Script):
             prefix_filename = filename[:-4]
             dict = config['configurations'][prefix_filename]
             write_xml(dict, file_path)
-            
-            dfs_file_path = dfs_conf_dir + '/' + filename
+            dfs_file_path = Master.dfs_conf_dir + '/' + filename
             if not os.path.isfile(dfs_file_path):
-                status,output = commands.getstatusoutput("ln -s file_path dfs_file_path")
+                ln_cmd = 'ln -s ' + file_path + ' ' + dfs_file_path
+                status,output = commands.getstatusoutput(ln_cmd)
                 print "execute 'ln' status code: ", status
        # status,output = commands.getstatusoutput("pwd")
        # print 'status code: ', status

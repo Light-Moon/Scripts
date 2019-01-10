@@ -1,10 +1,11 @@
 #!/bin/bash
-user=dfs1
-group=dfs1
+user=autodfs
+group=autodfs
 keytab_path=/etc/security/keytabs
 user_root_path=/home/${user}
 component_name=ctdfs
-default_package_path=/apps/dfs/ctdfs.tar.gz
+#TODO:首先要把ctdfs的安装包上传到hdfs指定目录上并利用hadoop fs -chown -R dfs:dfs /apps更改所属用户及组
+default_package_path=/apps/ctdfs.tar.gz
 default_compressed_package_name=ctdfs.tar.gz
 
 #create group if not exists
@@ -23,8 +24,8 @@ echo ${user_infos}
 if [ -z "${user_infos}" ]; then
     echo "user of ${user} is not exist!"
 	useradd -g ${group} -d ${user_root_path} -m ${user}
-	read -p "please input password for ${user} user:" password	
-	echo ${password} |passwd --stdin ${user}	
+	# read -p "please input password for ${user} user:" password	
+	# echo ${password} |passwd --stdin ${user}	
 else
     echo "user of ${user} is exist!"
 	#TODO: add ${user} to ${group}
@@ -39,14 +40,14 @@ kerberos_username=hbase/admin
 kerberos_password=root
 keytab_name=${user}.service.keytab
 domain_name=`hostname -f`
-#`/usr/bin/kadmin -p ${kerberos_username} -w ${kerberos_password} -q 'ank -randkey ${user}/${domain_name}'`
-#`/usr/bin/kadmin -p ${kerberos_username} -w ${kerberos_password} -q 'xst -k ${keytab_path}/${keytab_name} ${user}/${domain_name}'
-#echo "0 0 * * * /usr/bin/kinit -k -t ${keytab_path}/${keytab_name} ${user}/${domain_name}" >>/var/spool/cron/${user}
-#`crontab /var/spool/cron/${user}`
-#`chown ${user}:${user} /var/spool/cron/${user}`&&`chmod 644 /var/spool/cron/${user}`
-#`chmod 644 ${keytab_path}/${keytab_name}`
+# `/usr/bin/kadmin -p ${kerberos_username} -w ${kerberos_password} -q 'ank -randkey ${user}/${domain_name}'`
+# `/usr/bin/kadmin -p ${kerberos_username} -w ${kerberos_password} -q 'xst -k ${keytab_path}/${keytab_name} ${user}/${domain_name}'
+# echo "0 0 * * * /usr/bin/kinit -k -t ${keytab_path}/${keytab_name} ${user}/${domain_name}" >>/var/spool/cron/${user}
+# `crontab /var/spool/cron/${user}`
+# `chown ${user}:${user} /var/spool/cron/${user}`&&`chmod 644 /var/spool/cron/${user}`
+# `chmod 644 ${keytab_path}/${keytab_name}`
 `su ${user}`
-#`/usr/bin/kinit -k -t ${keytab_path}/${keytab_name} ${user}/${domain_name}`
+# `/usr/bin/kinit -k -t ${keytab_path}/${keytab_name} ${user}/${domain_name}`
 if [-n "$1"]; then
 	${default_package_path}=$1
 	${default_compressed_package_name}=${1##*/}
@@ -63,9 +64,9 @@ fi
 
 #TODO:在hbase上建立dfs命名空间并为dfs用户分配管理权限
 #kinit for hbase
-hbase_keytab_name=hbase.headless.keytab
-hbase_sub_principal=klist -k ${keytab_path}/${hbase_keytab_name} | sed -n 4p | awk -F '[ @]+' '{print $3}'
-`/usr/bin/kinit -k -t ${keytab_path}/${hbase_keytab_name} hbase/${hbase_sub_principal}`
+# hbase_keytab_name=hbase.headless.keytab
+# hbase_sub_principal=klist -k ${keytab_path}/${hbase_keytab_name} | sed -n 4p | awk -F '[ @]+' '{print $3}'
+# `/usr/bin/kinit -k -t ${keytab_path}/${hbase_keytab_name} hbase/${hbase_sub_principal}`
 
 #TODO:加上def start部分读配置并写入文件的内容
 

@@ -8,16 +8,16 @@
             <displayName>DFS_TEST</displayName>
             <comment>A New Sample Service</comment>
             <version>1.0.0</version>
-			<requiredServices>
-				<service>HDFS</service>
-				<service>HBASE</service>
-				<service>ZOOKEEPER</service>
-			</requiredServices>
+	    <requiredServices>
+		<service>HDFS</service>
+		<service>HBASE</service>
+		<service>ZOOKEEPER</service>
+            </requiredServices>
             <components>
                 <!-- Master-->
                 <component>
-                    <name>MY_MASTER</name>
-                    <displayName>DFS_TEST_MASTER</displayName>
+                    <name>DFS_MASTER</name>
+                    <displayName>CTDFS</displayName>
                     <category>MASTER</category>
                     <cardinality>1+</cardinality>
                     <commandScript>
@@ -28,37 +28,39 @@
                 </component>
                 <!-- Slave-->
                 <component>
-                    <name>MY_SLAVE</name>
-                    <displayName>DFS_TEST_SLAVE</displayName>
+                    <name>DFS_SLAVE1</name>
+                    <displayName>FTP Server</displayName>
                     <category>SLAVE</category>
                     <cardinality>1+</cardinality>
                     <commandScript>
-                        <script>scripts/slave.py</script>
+                        <script>scripts/ftp_server.py</script>
                         <scriptType>PYTHON</scriptType>
                         <timeout>600</timeout>
                     </commandScript>
-					<dependencies>CLIENT</dependencies>
+		    <dependencies>
+			<component>DFS_MASTER</component>
+		    </dependencies>
                 </component>
                 <component>
-                    <name>MY_CLIENT</name>
-                    <displayName>DFS_TEST_CLIENT</displayName>
-                    <category>CLIENT</category>
+                    <name>DFS_SLAVE2</name>
+                    <displayName>REST Server</displayName>
+                    <category>SLAVE</category>
                     <cardinality>1+</cardinality>
                     <commandScript>
-                        <script>scripts/client.py</script>
+                        <script>scripts/rest_server.py</script>
                         <scriptType>PYTHON</scriptType>
                         <timeout>600</timeout>
                     </commandScript>
                 </component>
             </components>           
-			<!-- set configuration file-->
+            <!-- set configuration file-->
             <configuration-dependencies>
                 <config-type>dfs-site</config-type>
             </configuration-dependencies>
             <osSpecifics>
                 <osSpecific>
                     <osFamily>any</osFamily>  
-					<!-- note: use osType rather than osFamily for Ambari 1.5.0 and 1.5.1 -->
+			<!-- note: use osType rather than osFamily for Ambari 1.5.0 and 1.5.1 -->
                 </osSpecific>
             </osSpecifics>
         </service>
