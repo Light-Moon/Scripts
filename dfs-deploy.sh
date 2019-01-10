@@ -56,7 +56,12 @@ if [ -d "${user_root_path}/${component_name}" ]; then
 	mv ${user_root_path}/${component_name} ${user_root_path}/${component_name}$(date +%Y%m%d%H%M%S)
 fi	
 `hadoop fs -get ${default_package_path} ${user_root_path}`
-`tar -xvzf ${user_root_path}/${default_compressed_package_name} ${user_root_path}/${component_name}`
+if [ $? -eq 0 ]; then
+    `tar -xvzf ${user_root_path}/${default_compressed_package_name} ${user_root_path}/${component_name}`
+else
+	exit
+fi
+
 if [ ${user} == `whoami`]; then
 	`exit`
 fi
