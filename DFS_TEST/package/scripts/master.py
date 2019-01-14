@@ -13,7 +13,7 @@ class Master(Script):
         print 'Install DFS_MASTER';
         current_path = os.getcwd()
         scripts_path = current_path + '/cache/stacks/HDP/2.5/services/DFS_TEST/package/scripts'
-        status,output = commands.getstatusoutput("${scripts_path}/dfs-deploy.sh >> ${scripts_path}/dfs-deploy.log")
+        status,output = commands.getstatusoutput("sh " + scripts_path + "/dfs-deploy.sh >> " + scripts_path + "/dfs-deploy.log")
         print 'install status code: ', status
         print 'install output: ', output
     def stop(self, env):
@@ -31,8 +31,10 @@ class Master(Script):
            # os.mkdir(conf_dir)   
            # Directory([conf_dir],mode=0755,owner='dfs',group='dfs',create_parents=True) 
             Directory([conf_dir],mode=0755,owner='autodfs',group='autodfs',create_parents=True) 
-        filenames = ['dfs-site.xml']
+        # filenames = ['dfs-site.xml']
+        filenames = commands.getoutput("find " + conf_dir + " '*.xml' -o '*.properties' -type f -maxdepth 1")
         for filename in filenames:
+            filename = filename.split('/')[-1]
             file_path = conf_dir + '/' + filename
             if not os.path.isfile(file_path):
                # f = open(file_path, 'w')
