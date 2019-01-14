@@ -66,28 +66,61 @@ echo "current user is : `whoami`"
 `su - ${user} -c "mkdir ${user_root_path}/${component_name}"`
 if [ $? -eq 0 ]; then
     echo "download install package success!!!"
-    `su - ${user} -c "tar -xvzf ${user_root_path}/${default_compressed_package_name} -C ${user_root_path}/${component_name} --strip-components 1"`
+    `su - ${user} -c "tar -xvzf ${user_root_path}/${default_compressed_package_name} -C ${user_root_path}/${component_name} --strip-components 1 > /dev/null "`
 else
 	echo "download ctdfs install package fail!!!"
 	exit
 fi
 
-if [ "${user}" == `whoami` ]; then
-	`exit`
-fi
+#if [ "${user}" == `whoami` ]; then
+#	`exit`
+#fi
 #TODO:在hbase上建立dfs命名空间并为dfs用户分配管理权限
 #kinit for hbase
 # hbase_keytab_name=hbase.headless.keytab
 # hbase_sub_principal=klist -k ${keytab_path}/${hbase_keytab_name} | sed -n 4p | awk -F '[ @]+' '{print $3}'
 # `/usr/bin/kinit -k -t ${keytab_path}/${hbase_keytab_name} hbase/${hbase_sub_principal}`
 #TODO:加上def start部分读配置并写入文件的内容
-#TODO:建立软连接模块
-
-
-#TODO:修改run.sh config.sh配置文件
-java_home=echo `which java` | xargs ls -l | awk -F '->' '{print $2}' | xargs ls -l | awk -F '->' '{print $2}' | awk -F '/bin' '{print $1}'
+#建立软连接模块
+dfs_conf_dir=/var/lib/ambari-agent/cache/stacks/HDP/2.5/services/DFS_TEST/configuration
+hdfs_conf_dir=/etc/hadoop/conf
+hbase_conf_dir=/etc/hbase/conf
+conf_dir=${user_root_path}/${component_name}/conf
+hdfs_conf_files=("core-site.xml" "hdfs-site.xml" "mapred-site.xml" "yarn-site.xml" "log4j.properties")
+hbase_conf_file=hbase-site.xml
+for hdfs_conf_file in "${hdfs_conf_files[@]}"
+do
+	`ln -s ${hdfs_conf_dir}/${hdfs_conf_file} ${conf_dir}/${hdfs_conf_file}`
+done
+`ln -s ${hbase_conf_dir}/${hbase_conf_file} ${conf_dir}/${hbase_conf_file}`
+`ln -s ${hbase_conf_dir}/${hbase_conf_file} ${conf_dir}/dfs-${hbase_conf_file}`
+for dfs_conf_file in `find ${dfs_conf_dir} -maxdepth 1 -name '*.xml' -o -name '*.properties' -type f`
+do
+	file_name=${dfs_conf_file##*/}
+	echo "dfs_conf_file is : [${file_name}]"
+	#if [ "${file_name}" == "dfs-site.xml" ]; then
+	#	`ln -s ${dfs_conf_file} ${conf_dir}/dfs-default.xml`
+	#fi
+	`ln -s ${dfs_conf_file} ${conf_dir}/${file_name}`
+done
+#修改run.sh config.sh配置文件  通过readlink命令获取链接地址应该更方便
+#java_home=echo `which java` | xargs ls -l | awk -F '->' '{print $2}' | xargs ls -l | awk -F '->' '{print $2}' | awk -F '/bin' '{print $1}'
+java_home=`cat /etc/profile | grep JAVA_HOME= | awk -F '=' '{print $2}'`
+if [ $? -eq 0 ]
+then
+	echo "java_home is : [${java_home}]"
+else
+	echo "get java_home fail!"
+fi
 #因路径中有/和默认分隔符冲突故自定义分隔符
-`sed -i 's:JAVA_HOME=null:JAVA_HOME=${java_home}:g' ${user_root_path}/${component_name}/bin/config.sh`
+`sed -i 's:JAVA_HOME=null:JAVA_HOME="${java_home}":g' ${user_root_path}/${component_name}/bin/config.sh`
+if [ $? -eq 0 ]
+then
+	echo "change config.sh success!"
+else
+	echo "change config.sh fail!"
+fi
 #TODO:dfsadmin -init xxx.keytab
+
 #部署完成
 echo "execute dfs-deploy.sh done!!!!"
