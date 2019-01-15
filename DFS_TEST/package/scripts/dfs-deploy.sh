@@ -81,17 +81,22 @@ if [ -d "${user_root_path}/${component_name}" ]; then
 	fi
 fi
 `su - ${user} -c "mkdir ${user_root_path}/${component_name}"`
-if [ -f "${user_root_path}/${default_compressed_package_name}"]; then
+if [ -f "${user_root_path}/${default_compressed_package_name}" ]; then
 	echo "Install package is existed , no need to download!"	
 else
 	`su - ${user} -c "hadoop fs -get ${default_package_path} ${user_root_path}"`
 	if [ $? -eq 0 ]; then
-		echo "Download install package success!"
-		`su - ${user} -c "tar -xvzf ${user_root_path}/${default_compressed_package_name} -C ${user_root_path}/${component_name} --strip-components 1 > /dev/null "`
+		echo "Download install package success!"	
 	else
 		echo "Download install package fail and exit shell script execution now!"
 		exit
 	fi
+fi
+`su - ${user} -c "tar -xvzf ${user_root_path}/${default_compressed_package_name} -C ${user_root_path}/${component_name} --strip-components 1 > /dev/null "`
+if [ $? -eq 0 ]; then
+	echo "Decompression install package success!"
+else
+	echo "Decompression install package fail!"
 fi
 
 ########################################
@@ -104,7 +109,7 @@ then
 else
 	echo "Analyze java_home fail!"
 fi
-`sed -i 's:JAVA_HOME=null:JAVA_HOME="${java_home}":g' ${user_root_path}/${component_name}/bin/config.sh`
+`sed -i "s:JAVA_HOME=null:JAVA_HOME=\${java_home}:g" ${user_root_path}/${component_name}/bin/config.sh`
 if [ $? -eq 0 ]
 then
 	echo "Changed JAVA_HOME of \${ctdfs_path}/bin/config.sh success!"
@@ -149,7 +154,11 @@ done
 
 ########################################
 #Step9: Initialize CTDFS Component 
-
-#dfsadmin -init xxx.keytab
-
-echo "Execute shell script success!"
+`su - ${user} -c "${user_root_path}/${component_name}/bin/dfsadmin -init ${keytab_path}/${keytab_name}"`
+if [ $? -eq 0 ]
+then
+	echo "Component initialization success!"
+else
+	echo "Component initialization fail!"
+fi
+echo "Execute shell script done!"
