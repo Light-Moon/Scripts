@@ -1,12 +1,12 @@
 #!/bin/bash
 #If there is no args to specified, it will show usage.
 if [ $# = 0 ]; then
-	echo "Usage: $0 <user_root_path> <component_folder_name>"
+	echo "Usage: $0 <conf_dir>"
 	echo "Try '$0 --help' for more information."
 elif [[ $# = 1 ]] && [[ $1 = '--help' ]]; then
 	echo "*******************************start*********************************"
-	echo "The shell script needs 2 parameters separated by blank space(s)."
-	echo "For Example: sh $0 /home/dfs ctdfs"
+	echo "The shell script needs 1 parameter."
+	echo "For Example: sh $0 /home/dfs/conf"
 	echo "********************************end**********************************"
 fi
 if [[ $1 = */ ]];then
@@ -17,7 +17,7 @@ shell_script_path=`dirname "$0"`
 dfs_conf_dir=`cd ${shell_script_path}/../../configuration; pwd`
 hdfs_conf_dir=/etc/hadoop/conf
 hbase_conf_dir=/etc/hbase/conf
-conf_dir=$1/$2/conf
+conf_dir=$1
 hdfs_conf_files=("core-site.xml" "hdfs-site.xml" "mapred-site.xml" "yarn-site.xml" "log4j.properties")
 hbase_conf_file=hbase-site.xml
 for hdfs_conf_file in "${hdfs_conf_files[@]}"
