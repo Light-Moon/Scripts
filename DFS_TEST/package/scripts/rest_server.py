@@ -7,23 +7,23 @@ from resource_management.core.logger import Logger
 
 class Slave(Script):
     def install(self, env):
-        print 'Install the Sample Srv Slave';
+        print 'Install the Rest Server';
     def stop(self, env):
+        print "Stop Rest Server"
         status,output = commands.getstatusoutput("ls /apps/dfs")
         print 'status code: ', status
         print 'output: ', output
         Execute('rm -f /apps/dfs/dfs_slave.pid')
-        print "Stop My Slave" 
     def start(self, env):
+        print "Start Rest Server"
         status,output = commands.getstatusoutput("ls")
         print 'status code: ', status
         print 'output: ', output
-        print "Start My Slave" 
     def status(self, env):
+        print "Status Rest Server"
         pid =  format ("/apps/dfs/dfs_slave.pid")
         check_process_status(pid)
-        print 'Status of the My Slave';  
     def configure(self, env):
-        print 'Configure the Sample Srv Slave';
+        print "Configure Rest Server"
 if __name__ == "__main__":
     Slave().execute()
