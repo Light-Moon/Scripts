@@ -32,28 +32,55 @@ class Master(Script):
         print "Current install_package_path is [" + Master.install_package_path + "]"
         current_path = os.getcwd()
         scripts_path = current_path + '/cache/stacks/HDP/2.5/services/DFS_TEST/package/scripts'
-        status,output = commands.getstatusoutput("sh " + scripts_path + "/test.sh -u " + Master.superuser + " -g " + Master.supergroup + " -p " + Master.install_package_path + " >> " + scripts_path + "/dfs-deploy.log")
+        status,output = commands.getstatusoutput("sh " + scripts_path + "/dfs-deploy.sh -u " + Master.superuser + " -g " + Master.supergroup + " -p " + Master.install_package_path + " >> " + scripts_path + "/dfs-deploy.log")
         print 'install status code: ', status
         print 'install output: ', output
+        dfs_conf_dir = current_path + '/cache/stacks/HDP/2.5/services/DFS_TEST/configuration'
+        if not os.path.isdir(dfs_conf_dir):
+           # os.mkdir(dfs_conf_dir)   2选1即可
+            Directory([dfs_conf_dir],mode=0755,owner=Master.superuser,group=Master.supergroup,create_parents=True) 
+        filenames = ['dfs-site.xml','dfs-default.xml']
+        for filename in filenames:
+            print 'origin filename=', filename
+            # filename = filename.split('/')[-1]
+            file_path = dfs_conf_dir + '/' + filename
+            print 'file_path=', file_path
+            if not os.path.isfile(file_path):
+                File([file_path],mode=0755,owner='autodfs',group='autodfs')
+            prefix_filename = filename[:-4]
+            print 'prefix_filename = ', prefix_filename
+            dict = config['configurations'][prefix_filename]
+            write_xml(dict, file_path)
+        status,user_infos=commands.getstatusoutput("cat /etc/passwd|grep ^" + Master.superuser + ":")
+        print 'user_infos = ', user_infos
+        #substr=commands.getoutput("${" + user_infos + "##*::}")
+        #substr=commands.getoutput("echo ${user_infos##*::}")
+        #print 'substr = ', substr
+        #user_root_path=commands.getoutput("echo ${" + substr + "%%:*}")
+        user_root_path=user_infos.split(':')[5]        
+        print 'user_root_path = ', user_root_path
+        conf_dir = user_root_path + '/ctdfs/conf'
+        status,output = commands.getstatusoutput("sh " + scripts_path + "/create-softlinks.sh " + conf_dir)				
+        print 'create-softlinks status code:', status
+        print 'create-softlinks output:', output
+        cmd_dir = user_root_path + '/ctdfs/bin/dfsadmin'
+        keytab='/etc/security/keytabs/' + Master.superuser + '.service.keytab'
+        status,output = commands.getstatusoutput("su - " + Master.superuser + ' -c "' + cmd_dir + " -init " + keytab + '"')
+        print 'Init component status code:', status
+        print 'Init component output:', output
     def stop(self, env):
         print "Stop DFS_MASTER"
     def start(self, env):
         print "Start DFS_MASTER"
         status,user_infos=commands.getstatusoutput("cat /etc/passwd|grep ^" + Master.superuser + ":")
-        #substr=commands.getoutput("${user_infos##*::}")
-        #user_root_path=commands.getoutput("${substr%%:*}")
-        #conf_dir = '${user_root_path}/ctdfs/conf'
-        substr=commands.getoutput("${" + user_infos + "##*::}")
-        user_root_path=commands.getoutput("${" + substr + "%%:*}")
+        #substr=commands.getoutput("${" + user_infos + "##*::}")
+        #user_root_path=commands.getoutput("${" + substr + "%%:*}")
+        user_root_path=user_infos.split(':')[5]
         conf_dir = user_root_path + '/ctdfs/conf'
         config = Script.get_config()
         current_path = os.getcwd()
         dfs_conf_dir = current_path + '/cache/stacks/HDP/2.5/services/DFS_TEST/configuration'
-        if not os.path.isdir(dfs_conf_dir):
-           # os.mkdir(dfs_conf_dir)   2选1即可
-            Directory([dfs_conf_dir],mode=0755,owner=Master.superuser,group=Master.supergroup,create_parents=True) 
-        #filenames = ['dfs-site.xml']
-        status,filenames = commands.getstatusoutput("find " + dfs_conf_dir + " -name *.xml -o -name *.properties -type f -maxdepth 1")
+        status,filenames = commands.getstatusoutput("find " + dfs_conf_dir + " -maxdepth 1 -name *.xml -o -name *.properties -type f")
         print 'find xxx status code: ', status
         print 'find xxx output: ', filenames
         print 'filenames is', filenames
@@ -62,20 +89,12 @@ class Master(Script):
             filename = filename.split('/')[-1]
             file_path = dfs_conf_dir + '/' + filename
             print 'file_path=', file_path
-            if not os.path.isfile(file_path):
-               # f = open(file_path, 'w')
-               # f.close() 上面两句等同于下一句，2选1即可
-                File([file_path],mode=0755,owner='autodfs',group='autodfs')
             prefix_filename = filename[:-4]
             print 'prefix_filename = ', prefix_filename
             dict = config['configurations'][prefix_filename]
             #dict = config['configurations']['dfs-site']
             write_xml(dict, file_path)
-            dfs_file_path = conf_dir + '/' + filename
-            if not os.path.isfile(dfs_file_path):
-                ln_cmd = 'ln -s ' + file_path + ' ' + dfs_file_path
-                status,output = commands.getstatusoutput(ln_cmd)
-                print "execute 'ln' status code: ", status
+        status,output = commands.getstatusoutput("sh " + scripts_path + "/create-softlinks.sh " + conf_dir)			
        # status,output = commands.getstatusoutput("pwd")
        # print 'status code: ', status
        # print 'output: ', output

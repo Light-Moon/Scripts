@@ -5,7 +5,7 @@ superuser=autodfs
 supergroup=autodfs
 keytab_path=/etc/security/keytabs
 user_root_path=/home/${superuser}
-component_name=ctdfs
+component_folder_name=ctdfs
 install_package_path=/apps/ctdfs.tar.gz
 compressed_package_name=ctdfs.tar.gz
 
@@ -13,10 +13,9 @@ compressed_package_name=ctdfs.tar.gz
 if [ $# = 0 ]; then
 	echo "Usage: $0 [-u <username>] [-g <groupname>] [-p <install_package_path>]"
 	echo "Try '$0 --help' for more information."
-fi
-
-if [[ $# = 1 ]] && [[ $1 = '--help' ]]; then
-	echo "*******************************start***********************************"
+	exit 0
+elif [[ $# = 1 ]] && [[ $1 = '--help' ]]; then
+	echo "*******************************start*********************************"
 	echo "The number of parameters can be zero or more!Default values of parameters are:"
 	echo "username : [${superuser}]"
 	echo "groupname : [${supergroup}]"
@@ -27,30 +26,32 @@ if [[ $# = 1 ]] && [[ $1 = '--help' ]]; then
 	echo "$0 [-u <username>] [-u <groupname>]  -->  set two parameters , install_package_path take default values."
 	echo "and so on ..."
 	echo "********************************end**********************************"
+	exit 0
 fi
-
+#TODO:格式正确性进一步判断
 #Get arguments.
 while getopts ":u:g:p:" opt
 do
 	case ${opt} in
-		u)
-			superuser=$OPTARG
-			echo "superuser = [$superuser]"
-			;;
+	u)
+		superuser=$OPTARG
+		echo "superuser = [$superuser]"
+		;;
         g)
-			supergroup=$OPTARG
-			echo "supergroup = [$supergroup]"
-			;;
+		supergroup=$OPTARG
+		echo "supergroup = [$supergroup]"
+		;;
         p)
-			install_package_path=$OPTARG
-			echo "install_package_path = [$install_package_path]"
-			;;
+		install_package_path=$OPTARG
+		compressed_package_name=${install_package_path##*/}
+		echo "install_package_path = [$install_package_path]"
+		;;
         ?)
-			echo "Unknown parameter error!"
-			echo "Usage: $0 [-u <username>] [-g <groupname>] [-p <install_package_path>]"
-			exit 1
-			;;
-    esac
+		echo "Unknown parameter error!"
+		echo "Usage: $0 [-u <username>] [-g <groupname>] [-p <install_package_path>]"
+		exit 1
+		;;
+	esac
 done
 
 
@@ -112,23 +113,24 @@ echo "Current user is : [`whoami`]"
 #Step4: Read script parameters.
 #	param1:Installation pack storage path in HDFS.
 
-if [ -n "$1" ]; then
-	${install_package_path}=$1
-	${compressed_package_name}=${1##*/}
-fi
+#if [ -n "$1" ]; then
+#	${install_package_path}=$1
+#	${compressed_package_name}=${1##*/}
+#fi
 
 ########################################
 #Step5: Download installer package from hadoop cluster and to decompression.
 
-if [ -d "${user_root_path}/${component_name}" ]; then
-	`mv ${user_root_path}/${component_name} ${user_root_path}/${component_name}$(date +%Y%m%d%H%M%S)`
+if [ -d "${user_root_path}/${component_folder_name}" ]; then
+	`mv ${user_root_path}/${component_folder_name} ${user_root_path}/${component_folder_name}$(date +%Y%m%d%H%M%S)`
 	if [ $? -eq 0 ]; then
-		echo "Backup folder of ${component_name} success!"
+		echo "Backup folder of ${component_folder_name} success!"
 	fi
 fi
-`su - ${superuser} -c "mkdir ${user_root_path}/${component_name}"`
+`su - ${superuser} -c "mkdir ${user_root_path}/${component_folder_name}"`
 if [ -f "${user_root_path}/${compressed_package_name}" ]; then
-	echo "Install package is existed , no need to download!"	
+	#echo "Install package is existed , no need to download!"	
+	`rm ${user_root_path}/${compressed_package_name}`
 else
 	`su - ${superuser} -c "hadoop fs -get ${install_package_path} ${user_root_path}"`
 	if [ $? -eq 0 ]; then
@@ -138,9 +140,10 @@ else
 		exit 1
 	fi
 fi
-`su - ${superuser} -c "tar -xvzf ${user_root_path}/${compressed_package_name} -C ${user_root_path}/${component_name} --strip-components 1 > /dev/null "`
+`su - ${superuser} -c "tar -xvzf ${user_root_path}/${compressed_package_name} -C ${user_root_path}/${component_folder_name} --strip-components 1 > /dev/null "`
 if [ $? -eq 0 ]; then
 	echo "Decompression install package success!"
+	`rm ${user_root_path}/${compressed_package_name}`
 else
 	echo "Decompression install package fail!"
 fi
@@ -155,7 +158,7 @@ then
 else
 	echo "Analyze java_home fail!"
 fi
-`sed -i "s:JAVA_HOME=null:JAVA_HOME=\${java_home}:g" ${user_root_path}/${component_name}/bin/config.sh`
+`sed -i "s:JAVA_HOME=null:JAVA_HOME=\${java_home}:g" ${user_root_path}/${component_folder_name}/bin/config.sh`
 if [ $? -eq 0 ]
 then
 	echo "Changed JAVA_HOME of \${ctdfs_path}/bin/config.sh success!"
@@ -173,36 +176,14 @@ fi
 # 2)create namespace and empowerment
 
 ########################################
-#Step8: Create soft links for configuration files
+#Step8: Create soft links for configuration files 单独拿出来了，因为配置文件不会自动从ambari-server传到agent上去，要自己先建立所有的配置文件
+#shell_script_path=`dirname $0 | cd ; pwd`
+#`sh ${shell_script_path}/create-softlinks.sh ${user_root_path} ${component_folder_name}`
 
-# dfs自身的配置文件并未读配置并更新写入文件，在master的启动模块统一更新
-#dfs_conf_dir=/var/lib/ambari-agent/cache/stacks/HDP/2.5/services/DFS_TEST/configuration
-shell_script_path=`dirname "$0"`
-dfs_conf_dir=`cd ${shell_script_path}/../../configuration; pwd`
-hdfs_conf_dir=/etc/hadoop/conf
-hbase_conf_dir=/etc/hbase/conf
-conf_dir=${user_root_path}/${component_name}/conf
-hdfs_conf_files=("core-site.xml" "hdfs-site.xml" "mapred-site.xml" "yarn-site.xml" "log4j.properties")
-hbase_conf_file=hbase-site.xml
-for hdfs_conf_file in "${hdfs_conf_files[@]}"
-do
-	`ln -s ${hdfs_conf_dir}/${hdfs_conf_file} ${conf_dir}/${hdfs_conf_file}`
-done
-`ln -s ${hbase_conf_dir}/${hbase_conf_file} ${conf_dir}/${hbase_conf_file}`
-`ln -s ${hbase_conf_dir}/${hbase_conf_file} ${conf_dir}/dfs-${hbase_conf_file}`
-for dfs_conf_file in `find ${dfs_conf_dir} -maxdepth 1 -name '*.xml' -o -name '*.properties' -type f`
-do
-	file_name=${dfs_conf_file##*/}
-	echo "dfs_conf_file is : [${file_name}]"
-	#if [ "${file_name}" == "dfs-site.xml" ]; then
-	#	`ln -s ${dfs_conf_file} ${conf_dir}/dfs-default.xml`
-	#fi
-	`ln -s ${dfs_conf_file} ${conf_dir}/${file_name}`
-done
 
 ########################################
 #Step9: Initialize CTDFS Component 
-`su - ${superuser} -c "${user_root_path}/${component_name}/bin/dfsadmin -init ${keytab_path}/${keytab_name}"`
+`su - ${superuser} -c "${user_root_path}/${component_folder_name}/bin/dfsadmin -init ${keytab_path}/${keytab_name}"`
 if [ $? -eq 0 ]
 then
 	echo "Component initialization success!"

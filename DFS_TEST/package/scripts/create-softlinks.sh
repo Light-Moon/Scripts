@@ -22,10 +22,17 @@ hdfs_conf_files=("core-site.xml" "hdfs-site.xml" "mapred-site.xml" "yarn-site.xm
 hbase_conf_file=hbase-site.xml
 for hdfs_conf_file in "${hdfs_conf_files[@]}"
 do
-	`ln -s ${hdfs_conf_dir}/${hdfs_conf_file} ${conf_dir}/${hdfs_conf_file}`
+	if [ ! -f "${conf_dir}/${hdfs_conf_file}" ]; then
+		`ln -s ${hdfs_conf_dir}/${hdfs_conf_file} ${conf_dir}/${hdfs_conf_file}`
+	fi
 done
-`ln -s ${hbase_conf_dir}/${hbase_conf_file} ${conf_dir}/${hbase_conf_file}`
-`ln -s ${hbase_conf_dir}/${hbase_conf_file} ${conf_dir}/dfs-${hbase_conf_file}`
+if [ ! -f "${conf_dir}/${hbase_conf_file}" ]; then
+	`ln -s ${hbase_conf_dir}/${hbase_conf_file} ${conf_dir}/${hbase_conf_file}`
+fi
+if [ ! -f "${conf_dir}/dfs-${hbase_conf_file}" ]; then
+	`ln -s ${hbase_conf_dir}/${hbase_conf_file} ${conf_dir}/dfs-${hbase_conf_file}`
+fi
+#for dfs_conf_file in `find ${dfs_conf_dir} -maxdepth 1 -name '*.xml' -o -name '*.properties' -type f`
 for dfs_conf_file in `find ${dfs_conf_dir} -maxdepth 1 -name '*.xml' -type f`
 do
 	file_name=${dfs_conf_file##*/}
@@ -33,5 +40,7 @@ do
 	#if [ "${file_name}" == "dfs-site.xml" ]; then
 	#	`ln -s ${dfs_conf_file} ${conf_dir}/dfs-default.xml`
 	#fi
-	`ln -s ${dfs_conf_file} ${conf_dir}/${file_name}`
+	if [ ! -f "${conf_dir}/${file_name}" ]; then
+		`ln -s ${dfs_conf_file} ${conf_dir}/${file_name}`
+	fi
 done

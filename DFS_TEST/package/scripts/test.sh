@@ -8,7 +8,6 @@ user_root_path=/home/${superuser}
 component_name=ctdfs
 install_package_path=/apps/ctdfs.tar.gz
 compressed_package_name=ctdfs.tar.gz
-
 #If there is no args to specified, it will show usage.
 if [ $# = 0 ]; then
 	echo "Usage: $0 [-u <username>] [-g <groupname>] [-p <install_package_path>]"
@@ -32,23 +31,23 @@ fi
 #Get arguments.
 while getopts ":u:g:p:" opt
 do
-	case ${opt} in
-		u)
-			superuser=$OPTARG
-			echo "superuser = [$superuser]"
-			;;
+        case ${opt} in
+        u)
+		superuser=$OPTARG
+		echo "superuser = [$superuser]"
+		;;
         g)
-			supergroup=$OPTARG
-			echo "supergroup = [$supergroup]"
-			;;
+		supergroup=$OPTARG
+		echo "supergroup = [$supergroup]"
+		;;
         p)
-			install_package_path=$OPTARG
-			echo "install_package_path = [$install_package_path]"
-			;;
+		install_package_path=$OPTARG
+		echo "install_package_path = [$install_package_path]"
+		;;
         ?)
-			echo "Unknown parameter error!"
-			echo "Usage: $0 [-u <username>] [-g <groupname>] [-p <install_package_path>]"
-			exit 1
-			;;
-    esac
+		echo "Unknown parameter error!"
+		echo "Usage: $0 [-u <username>] [-g <groupname>] [-p <install_package_path>]"
+		exit 1
+		;;
+        esac
 done
