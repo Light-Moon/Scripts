@@ -84,7 +84,7 @@ class Master(Script):
         print 'find xxx status code: ', status
         print 'find xxx output: ', filenames
         print 'filenames is', filenames
-        for filename in filenames:
+        for filename in filenames.split('\n'):
             print 'origin filename=', filename
             filename = filename.split('/')[-1]
             file_path = dfs_conf_dir + '/' + filename
@@ -94,6 +94,7 @@ class Master(Script):
             dict = config['configurations'][prefix_filename]
             #dict = config['configurations']['dfs-site']
             write_xml(dict, file_path)
+        scripts_path = current_path + '/cache/stacks/HDP/2.5/services/DFS_TEST/package/scripts'
         status,output = commands.getstatusoutput("sh " + scripts_path + "/create-softlinks.sh " + conf_dir)			
        # status,output = commands.getstatusoutput("pwd")
        # print 'status code: ', status
@@ -113,8 +114,14 @@ class Master(Script):
        # File(['/apps/dfs/zql.xml'],mode=0755,owner='dfs',group='dfs',content='zzzzz')
        # Directory(['/apps/dfs/zql/dir1'],mode=0755,owner='dfs',group='dfs',create_parents=True)
     def status(self, env):
-        pid =  format ("/apps/dfs/dfs.pid")
-        check_process_status(pid)
+        #status,user_infos=commands.getstatusoutput("cat /etc/passwd|grep ^" + Master.superuser + ":")
+        #user_root_path=user_infos.split(':')[5]
+        #pid_dir = user_root_path + '/ctdfs/pid/master.pid'
+        #pid =  format (pid_dir)
+        status,pid = commands.getstatusoutput("ps -ef|grep NameNode |grep -v grep | awk '{print $2}'")
+        #check_process_status(pid)
+        if pid:
+            raise ComponentIsNotRunning()
         print 'Status of the DFS_MASTER';
     def configure(self, env):
         print 'Configure the Sample Srv Master';

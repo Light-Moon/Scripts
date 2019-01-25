@@ -47,12 +47,20 @@ class Slave(Script):
                 print 'ln_cmd output : ', output
     def stop(self, env):
         print "Stop Ftp Server"
-        status,output = commands.getstatusoutput("ls /apps/dfs")
-        print 'status code: ', status
+        status,user_infos=commands.getstatusoutput("cat /etc/passwd|grep ^" + Slave.superuser + ":")
+        user_root_path=user_infos.split(':')[5]
+        #pid =  format (user_root_path + "/ctdfs/pid/ftp.pid")
+        #status,output = commands.getstatusoutput("kill " + pid)
+        status,output = commands.getstatusoutput("sudo -u " + Slave.superuser + " ps -ef|grep ctdfs-ftp |grep -v grep | awk '{print $2}' | xargs kill ")
+        print 'kill ftp status code: ', status
         print 'output: ', output
-        Execute('rm -f /apps/dfs/dfs_slave.pid')
+        status,output = commands.getstatusoutput("rm  " + user_root_path + "/ctdfs/pid/ftp.pid")
+        print 'rm ftp.pid status code: ', status
+        print 'output: ', output
     def start(self, env):
         print "Start FTP Server"
+        current_path = os.getcwd()
+        config = Script.get_config()
         dfs_conf_dir = current_path + '/cache/stacks/HDP/2.5/services/DFS_TEST/configuration'		
         filenames = ['ctdfs-ambari-site.xml']
         status,user_infos=commands.getstatusoutput("cat /etc/passwd|grep ^" + Slave.superuser + ":")
@@ -73,13 +81,20 @@ class Slave(Script):
             if not os.path.isfile(dfs_file_path):
                 ln_cmd = 'ln -s ' + file_path + ' ' + dfs_file_path
                 status,output = commands.getstatusoutput(ln_cmd)
-        status,output = commands.getstatusoutput("sudo -u " + Slave.superuser + " nohup " + user_root_path + "/ctdfs/bin/startFtp.sh > " + user_root_path + "/ctdfs/log/startFtp.log &")
+        status,output = commands.getstatusoutput("sudo -u " + Slave.superuser + " nohup sh " + user_root_path + "/ctdfs/bin/startFtp.sh > " + user_root_path + "/ctdfs/logs/startFtp.log \&")
         print 'status code: ', status
         print 'output: ', output
     def status(self, env):
         print "Status Ftp Server"
-        pid =  format ("/apps/dfs/dfs_slave.pid")
+        status,user_infos=commands.getstatusoutput("cat /etc/passwd|grep ^" + Slave.superuser + ":")
+        user_root_path=user_infos.split(':')[5]
+        pid = format(user_root_path + "/ctdfs/pid/ftp.pid")
+        status,pid2 = commands.getstatusoutput("sudo -u " + Slave.superuser + " ps -ef|grep NameNode |grep -v grep | awk '{print $2}'")
         check_process_status(pid)
+        print 'pid2 = ', pid2
+        #if pid:
+        #    raise ComponentIsNotRunning()
+        print 'Status of the DFS_FTP';
     def configure(self, env):
         print "Configure Ftp Server"
 if __name__ == "__main__":
