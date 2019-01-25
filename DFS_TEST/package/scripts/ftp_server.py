@@ -51,7 +51,7 @@ class Slave(Script):
         user_root_path=user_infos.split(':')[5]
         #pid =  format (user_root_path + "/ctdfs/pid/ftp.pid")
         #status,output = commands.getstatusoutput("kill " + pid)
-        status,output = commands.getstatusoutput("sudo -u " + Slave.superuser + " ps -ef|grep ctdfs-ftp |grep -v grep | awk '{print $2}' | xargs kill ")
+        status,output = commands.getstatusoutput("sudo -u " + Slave.superuser + " ps -ef|grep DFSFtpServer |grep -v grep | awk '{print $2}' | xargs kill ")
         print 'kill ftp status code: ', status
         print 'output: ', output
         status,output = commands.getstatusoutput("rm  " + user_root_path + "/ctdfs/pid/ftp.pid")
@@ -89,11 +89,7 @@ class Slave(Script):
         status,user_infos=commands.getstatusoutput("cat /etc/passwd|grep ^" + Slave.superuser + ":")
         user_root_path=user_infos.split(':')[5]
         pid = format(user_root_path + "/ctdfs/pid/ftp.pid")
-        status,pid2 = commands.getstatusoutput("sudo -u " + Slave.superuser + " ps -ef|grep NameNode |grep -v grep | awk '{print $2}'")
         check_process_status(pid)
-        print 'pid2 = ', pid2
-        #if pid:
-        #    raise ComponentIsNotRunning()
         print 'Status of the DFS_FTP';
     def configure(self, env):
         print "Configure Ftp Server"
