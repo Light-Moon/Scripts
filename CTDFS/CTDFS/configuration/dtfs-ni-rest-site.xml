@@ -1,0 +1,12 @@
+<configuration>
+    <property>
+        <name>dtfs.ni.rest.server.port</name>
+        <value>8995</value>
+    </property>
+    <!-- 
+    <property>
+        <name>dtfs.ni.rest.server.path</name>
+        <value>paas/v1/cmd</value>
+    </property>
+     -->
+</configuration>

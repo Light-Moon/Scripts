@@ -1,0 +1,22 @@
+<configuration>
+    <property>
+        <name>dtfs.ni.ambari.server.ip</name>
+        <value>${ambari.server.ip}</value>
+    </property>
+    <property>
+        <name>dtfs.ni.ambari.server.port</name>
+        <value>${ambari.server.port}</value>
+    </property>
+    <property>
+        <name>dtfs.ni.ambari.server.user.name</name>
+        <value>${ambari.server.user.name}</value>
+    </property>
+    <property>
+        <name>dtfs.ni.ambari.server.user.password</name>
+        <value>${ambari.server.user.password}</value>
+    </property>
+    <property>
+        <name>dtfs.ni.ambari.cluster.name</name>
+        <value>${ambari.cluster.name}</value>
+    </property>
+</configuration>

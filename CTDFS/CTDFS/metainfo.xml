@@ -1,0 +1,94 @@
+<?xml version="1.0"?>
+<metainfo>
+    <schemaVersion>2.0</schemaVersion>
+    <services>
+        <service>
+            <!-- Service-->
+            <name>CTDFS_COMPONENT</name>
+            <displayName>CTDFS</displayName>
+            <comment>A New Sample Service</comment>
+            <version>2.4.1</version>
+	    <requiredServices>
+		<service>HDFS</service>
+		<service>HBASE</service>
+		<service>ZOOKEEPER</service>
+            </requiredServices>
+            <components>
+                <!-- Master-->
+                <component>
+                    <name>CTDFS_MASTER</name>
+                    <displayName>CTDFS Server</displayName>
+                    <category>MASTER</category>
+                    <cardinality>1+</cardinality>
+                    <commandScript>
+                        <script>scripts/master.py</script>
+                        <scriptType>PYTHON</scriptType>
+                        <timeout>600</timeout>
+                    </commandScript>
+                </component>
+                <!-- Slave-->
+                <component>
+                    <name>CTDFS_FTP</name>
+                    <displayName>FTP Server</displayName>
+                    <category>SLAVE</category>
+                    <cardinality>1+</cardinality>
+                    <commandScript>
+                        <script>scripts/ftp_server.py</script>
+                        <scriptType>PYTHON</scriptType>
+                        <timeout>600</timeout>
+                    </commandScript>
+		    
+		    <dependencies>
+			<dependency>
+		    		<name>CTDFS_COMPONENT/CTDFS_MASTER</name>
+				<scope>host</scope>
+              			<auto-deploy>
+                	 	    <enabled>true</enabled>
+             			</auto-deploy>
+			</dependency>
+		    </dependencies>
+		    
+                </component>
+                <component>
+                    <name>CTDFS_REST</name>
+                    <displayName>REST Server</displayName>
+                    <category>SLAVE</category>
+                    <cardinality>1+</cardinality>
+                    <commandScript>
+                        <script>scripts/rest_server.py</script>
+                        <scriptType>PYTHON</scriptType>
+                        <timeout>600</timeout>
+                    </commandScript>
+		    <dependencies>
+                        <dependency>
+                                <name>CTDFS_COMPONENT/CTDFS_MASTER</name>
+                                <scope>host</scope>
+                                <auto-deploy>
+                                    <enabled>true</enabled>
+                                </auto-deploy>
+                        </dependency>
+                    </dependencies>
+                </component>
+            </components>          
+            <!-- set configuration file-->
+            <configuration-dependencies>
+                <config-type>dfs-site</config-type>
+                <config-type>dfs-default</config-type>
+                <config-type>ctdfs-rest-site</config-type>
+                <config-type>ctdfs-ambari-site</config-type>
+                <config-type>dtfs-ni-ambari-site</config-type>
+                <config-type>dtfs-ni-hadoop-site</config-type>
+                <config-type>dtfs-ni-rest-site</config-type>
+                <config-type>dtfs-ni-common-site</config-type>
+                <config-type>dtfs-ni-kafka-site</config-type>
+                <config-type>dtfs-ni-zookeeper-site</config-type>
+            </configuration-dependencies>
+            <osSpecifics>
+                <osSpecific>
+                    <osFamily>any</osFamily>  
+			<!-- note: use osType rather than osFamily for Ambari 1.5.0 and 1.5.1 -->
+                </osSpecific>
+            </osSpecifics>
+        </service>
+    </services>
+</metainfo>

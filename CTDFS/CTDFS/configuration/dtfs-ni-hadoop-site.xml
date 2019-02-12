@@ -1,0 +1,22 @@
+<configuration>
+    <property>
+        <name>dtfs.ni.hadoop.ha.znode.parent</name>
+        <value>/hadoop-ha</value>
+    </property>
+    <property>
+        <name>dtfs.ni.hbase.file.table.name</name>
+        <value>dfs:dfs_file</value>
+    </property>
+    <property>
+        <name>dtfs.ni.hbase.file.table.family.name</name>
+        <value>f</value>
+    </property>
+    <property>
+        <name>dtfs.ni.hbase.file.table.family.column.dir.name</name>
+        <value>d</value>
+    </property>
+    <property>
+        <name>dtfs.ni.hbase.file.table.family.column.size.name</name>
+        <value>l</value>
+    </property>
+</configuration>

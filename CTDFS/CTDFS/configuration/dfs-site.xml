@@ -1,0 +1,75 @@
+<configuration>
+	<property>
+		<name>dfs.zookeeper.quorum</name>
+		<value>h3a1.ecloud.com:2181,h3m1.ecloud.com:2181,h3m2.ecloud.com:2181</value>
+	</property>
+	<property>
+		<name>dfs.zookeeper.znode.root</name>
+		<value>/dfs-key</value>
+	</property>
+	<property>
+		<name>dfs.scheme</name>
+		<value>dfs</value>
+	</property>
+	<property>
+		<name>dfs.keytab.relogin.delay</name>
+		<value>82800000</value>
+	</property>
+	<property>
+		<name>dfs.keytab.relogin.preiod</name>
+		<value>82800000</value>
+	</property>
+	<property>
+		<name>dfs.tinyfile.size</name>
+		<value>509715200</value>
+	</property>
+	<property>
+		<name>dfs.filerel.expiretime</name>
+		<value>14400</value>
+	</property>
+
+	<property>
+		<name>dfs.query.page.size</name>
+		<value>30000</value>
+	</property>
+	<property>
+		<name>fs.dfs.impl</name>
+		<value>org.apache.hadoop.fs.DFSFileSystem</value>
+	</property>
+	
+	<!-- hadoop配置 -->
+	<property>
+		<name>fs.hdfs.impl.disable.cache</name>
+		<value>true</value>
+	</property>
+	<property>
+		<name>hbase.hconnection.threads.max</name>
+		<value>50</value>
+	</property>
+	<property>
+		<name>hbase.hconnection.threads.core</name>
+		<value>50</value>
+	</property>
+	<property>
+		<name>dfs.supergroup</name>
+   		<value>autodfs</value>
+   	</property>
+	<property>
+ 		<name>dfs.superuser</name>
+   		<value>autodfs</value>
+     	</property>
+        <property>
+                <name>dfs.installpack.path</name>
+                <value>/apps/ctdfs.tar.gz</value>
+        </property>
+<!--      	
+<property>
+     	 	<name>ctdfs.rest.server.port</name>
+     	  	<value>9001</value>
+     	</property>
+     	 -->
+	<property>
+ 		<name>dfs.superuser.kerberos.principal</name>
+  		<value>dfs/_HOST@ECLOUD.COM</value>
+  	</property>
+</configuration>
