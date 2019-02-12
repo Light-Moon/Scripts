@@ -68,7 +68,7 @@ class Master(Script):
         #pid =  format(params.master_pid_dir)
         #check_process_status(pid)
         status,pid = commands.getstatusoutput("ps -ef|grep NameNode |grep -v grep | awk '{print $2}'")
-        if pid == '':
+        if pid:
             raise ComponentIsNotRunning()
         print "********** Status CTDFS_MASTER Operation End **********"
     def configure(self, env):
