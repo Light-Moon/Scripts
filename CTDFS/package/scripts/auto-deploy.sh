@@ -55,43 +55,18 @@ do
 	esac
 done
 
+########################################
+#Step1: Configure supergroup and superuser for CTDFS in host
+shell_script_path=`dirname "$0"; pwd`
+${shell_script_path}/user_config.sh -u ${superuser} -g ${supergroup}
 
 ########################################
-#Step1: Configure supergroup for CTDFS in host
-
-egrep "^${supergroup}:" /etc/group > /dev/null 2>&1
-if [ $? -ne 0 ]
-then
-	echo "Group of [${supergroup}] is not exist! Now to create ..."
-        groupadd $supergroup
-	if [ $? -ne 0 ]
-	then
-		echo "Create group of [${supergroup}] success!"
-	fi
-else
-	echo "Group of ${supergroup} is existing! No need to create!"
-fi
-
-########################################
-#Step2: Configure superuser for CTDFS in host
-
+#Step2: Get user_root_path 
 superuser_infos=`cat /etc/passwd|grep ^${superuser}:`
-if [ -z "${superuser_infos}" ]; then
-    	echo "User of ${superuser} is not exist! Now to add user ..."
-	useradd -g ${supergroup} -d ${user_root_path} -m ${superuser}
-	if [ $? -ne 0 ]
-	then
-		echo "Add user of [${superuser}] success!"
-	fi
-	# read -p "please input password for ${superuser} user:" password	
-	# echo ${password} |passwd --stdin ${superuser}	
-else
-    	echo "User of ${superuser} is existing! No need to create!"
-   	#TODO: add ${superuser} to ${supergroup}
-    	substr=${superuser_infos##*::}
-    	user_root_path=${substr%%:*}
-    	echo "The root path of ${superuser} user is :[${user_root_path}]"
-fi
+substr=${superuser_infos##*::}
+user_root_path=${substr%%:*}
+echo "The root path of ${superuser} user is :[${user_root_path}]"
+
 
 ########################################
 #Step3: Configure kerberos for dfs user

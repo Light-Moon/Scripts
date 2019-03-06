@@ -13,6 +13,7 @@ ctdfs_conf_dir = scripts_path + '/../../configuration'
 #current_path = os.getcwd()
 #scripts_path = current_path + '/cache/stacks/HDP/2.5/services/DFS_TEST/package/scripts'
 #ctdfs_conf_dir = current_path + '/cache/stacks/HDP/2.5/services/DFS_TEST/configuration'
+output=commands.getoutput("sh " + scripts_path + "/user_config.sh -u " + superuser + " -g " + supergroup)
 user_infos=commands.getoutput("cat /etc/passwd|grep ^" + superuser + ":")
 user_root_path=user_infos.split(':')[5]
 target_conf_dir = user_root_path + '/ctdfs/conf'

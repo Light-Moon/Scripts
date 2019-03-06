@@ -18,6 +18,8 @@ class Master(Script):
         status,output = commands.getstatusoutput("sh " + params.scripts_path + "/auto-deploy.sh -u " + params.superuser + " -g " + params.supergroup + " -p " + params.install_package_path + " >> " + params.scripts_path + "/auto-deploy.log")
         print 'Execute auto-deploy.sh status code: ', status
         print 'Execute auto-deploy.sh output: ', output
+        if status > 0:
+            exit();
         if not os.path.isdir(params.ctdfs_conf_dir):
             Directory([params.ctdfs_conf_dir],mode=0755,owner=params.superuser,group=params.supergroup,create_parents=True) 
         for filename in params.ctdfs_master_conf_filenames:
