@@ -11,6 +11,7 @@ from xml_utils import write_xml
 
 class Ftp(Script):
     FTP_PID_DIR=''
+    superuser='dfs'
     def install(self, env):
         import params
         env.set_params(params)
@@ -72,6 +73,8 @@ class Ftp(Script):
         #pid = format(FTP_PID_DIR)
         #print 'FTP_PID_DIR is ',FTP_PID_DIR
         #print 'pid is ', pid
+        config = Script.get_config()
+        Ftp.superuser = config['configurations']['dfs-site']['dfs.superuser']
         print "********** Start CTDFS_FTP Operation End **********"
     def status(self, env):
         #import params
@@ -80,6 +83,7 @@ class Ftp(Script):
         #global FTP_PID_DIR 
         #pid = format(FTP_PID_DIR)
         user_infos=commands.getoutput("cat /etc/passwd|grep ^autodfs:")
+        #user_infos=commands.getoutput("cat /etc/passwd|grep ^" + Ftp.superuser + ":")
         user_root_path=user_infos.split(':')[5]
         pid = format(user_root_path + "/ctdfs/pid/rest.pid")
         check_process_status(pid)

@@ -84,6 +84,9 @@ class Rest(Script):
         #global REST_PID_DIR
         #pid = format(REST_PID_DIR)
         user_infos=commands.getoutput("cat /etc/passwd|grep ^autodfs:")
+        config = Script.get_config()
+        superuser = config['configurations']['dfs-site']['dfs.superuser']
+        #user_infos=commands.getoutput("cat /etc/passwd|grep ^" + superuser + ":")      
         user_root_path=user_infos.split(':')[5]
         pid = format(user_root_path + "/ctdfs/pid/rest.pid")
         check_process_status(pid)
