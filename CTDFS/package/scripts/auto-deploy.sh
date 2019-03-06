@@ -3,7 +3,6 @@
 #Default parameters value.
 superuser=autodfs
 supergroup=autodfs
-keytab_path=/etc/security/keytabs
 user_root_path=/home/${superuser}
 component_folder_name=ctdfs
 install_package_path=/apps/ctdfs.tar.gz
@@ -70,20 +69,29 @@ echo "The root path of ${superuser} user is :[${user_root_path}]"
 
 ########################################
 #Step3: Configure kerberos for dfs user
-
-kerberos_username=root/admin
-kerberos_password=root
-keytab_name=${superuser}.service.keytab
-domain_name=`hostname -f`
-echo "The domain_name is : [${domain_name}]"
-#`/usr/bin/kadmin -p ${kerberos_username} -w ${kerberos_password} -q 'ank -randkey ${superuser}/${domain_name}'`
-#`/usr/bin/kadmin -p ${kerberos_username} -w ${kerberos_password} -q 'xst -k ${keytab_path}/${keytab_name} ${superuser}/${domain_name}'`
-#echo "0 0 * * * /usr/bin/kinit -k -t ${keytab_path}/${keytab_name} ${superuser}/${domain_name}" >> /var/spool/cron/${superuser}
-#`crontab /var/spool/cron/${superuser}`
-#`chown ${superuser}:${supergroup} /var/spool/cron/${superuser}`&&`chmod 644 /var/spool/cron/${superuser}`
-#`chmod 644 ${keytab_path}/${keytab_name}`
-echo "Current user is : [`whoami`]"
-#`su - ${superuser} -c "/usr/bin/kinit -k -t ${keytab_path}/${keytab_name} ${superuser}/${domain_name}"`
+kerberos_status=`python -c 'import kerberos; print kerberos.getKerberosStatus()'`
+merge_keytabs_host=`python -c 'import kerberos; print kerberos.getMergeKeytabsHost()'`
+if [ "${kerberos_status}" == "true"]; then
+	kerberos_principal=`python -c 'import kerberos; print kerberos.getKerberosPrincipal()'`
+	kerberos_password=`python -c 'import kerberos; print kerberos.getKerberosPassword()'`
+	keytab_path=`python -c 'import kerberos; print kerberos.getKeytabPath()'`
+	keytab_name=`python -c 'import kerberos; print kerberos.getKeytabName()'`
+	domain_name=`hostname -f`
+	echo "The domain_name is : [${domain_name}]"
+	`/usr/bin/kadmin -p ${kerberos_principal} -w ${kerberos_password} -q 'ank -randkey ${superuser}/${domain_name}'`
+	`/usr/bin/kadmin -p ${kerberos_principal} -w ${kerberos_password} -q 'xst -k ${keytab_path}/${keytab_name} ${superuser}/${domain_name}'`
+	#echo "0 0 * * * /usr/bin/kinit -k -t ${keytab_path}/${keytab_name} ${superuser}/${domain_name}" >> /var/spool/cron/${superuser}
+	#`crontab /var/spool/cron/${superuser}`
+	#`chown ${superuser}:${supergroup} /var/spool/cron/${superuser}`&&`chmod 644 /var/spool/cron/${superuser}`
+	`chmod 644 ${keytab_path}/${keytab_name}`
+	echo "Current user is : [`whoami`]"
+	`su - ${superuser} -c "/usr/bin/kinit -k -t ${keytab_path}/${keytab_name} ${superuser}/${domain_name}"`
+	if ["${merge_keytabs_host}" == "${domain_name}"]; then
+		`cp ${keytab_path}/${keytab_name} ${user_root_path}/${component_folder_name}/keytab/merge` 
+	else
+		`scp ${keytab_path}/${keytab_name} ${superuser}@${merge_keytabs_host}:${user_root_path}/${component_folder_name}/keytab/merge`
+	fi
+fi
 
 ########################################
 #Step4: Download installer package from hadoop cluster and to decompression.
@@ -146,11 +154,11 @@ fi
 
 ########################################
 #Step6: Initialize CTDFS Component 
-`su - ${superuser} -c "${user_root_path}/${component_folder_name}/bin/dfsadmin -init ${keytab_path}/${keytab_name}"`
-if [ $? -eq 0 ]
-then
-	echo "Component initialization success!"
-else
-	echo "Component initialization fail!"
-fi
+#`su - ${superuser} -c "${user_root_path}/${component_folder_name}/bin/dfsadmin -init ${keytab_path}/${keytab_name}"`
+#if [ $? -eq 0 ]
+#then
+#	echo "Component initialization success!"
+#else
+#	echo "Component initialization fail!"
+#fi
 echo "Execute auto-deploy.sh script done!"
