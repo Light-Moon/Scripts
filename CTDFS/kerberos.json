@@ -1,0 +1,72 @@
+{
+  "services": [
+    {
+      "name": "CTDFS_K",
+      "identities": [
+        {
+          "name": "autodfs1",
+          "principal": {
+            "value": "autodfs1/_HOST@${realm}",
+            "type" : "service",
+            "configuration": "dfs-site/dfs.superuser.kerberos.principal",
+            "local_username" : "autodfs1"
+          },
+          "keytab": {
+            "file": "/etc/security/keytabs/autodfs1.headless.keytab",
+            "owner": {
+              "name": "autodfs1",
+              "access": "r"
+            },
+            "group": {
+              "name": "${cluster-env/user_group}",
+               "access": ""
+            },
+            "configuration": "dfs-site/autodfs.headless.keytab"
+           }
+        }
+      ],
+      "configurations": [
+        {
+          "dfs-site": {
+            "ctdfs.rest.server.port": "9001",
+            "dfs.supergroup": "autodfs"
+          }
+        }
+      ],
+      "components": [
+        {
+          "name": "CTDFS_SERVER",
+          "identities": [
+       	  {
+            "name": "ctdfs_server",
+            "principal": {
+              "value": "autodfs1/_HOST@${realm}",
+              "type" : "service",
+              "configuration": "dfs-site/dfs.superuser.kerberos.principal",
+              "local_username" : "autodfs1"
+             },
+            "keytab": {
+              "file": "/etc/security/keytabs/autodfs1.service.keytab",
+              "owner": {
+                "name": "autodfs1",
+                "access": "r"
+              },
+            "group": {
+               "name": "${cluster-env/user_group}",
+               "access": ""
+            },
+            "configuration": "dfs-site/autodfs.headless.keytab"
+           }
+   	  }
+         ]	
+        },
+        {
+          "name": "FTP_SERVER"
+        },
+        {
+          "name": "REST_SERVER"
+        }
+      ]
+    }
+  ]
+}
