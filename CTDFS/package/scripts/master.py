@@ -8,6 +8,7 @@ from resource_management.core.environment import Environment
 from resource_management.core.logger import Logger
 from resource_management.libraries.script.script import Script
 from xml_utils import write_xml
+import kerberos
 
 class Master(Script):
     def install(self, env):
@@ -34,9 +35,20 @@ class Master(Script):
         status,output = commands.getstatusoutput("sh " + params.scripts_path + "/create-softlinks.sh " + params.target_conf_dir)				
         print 'create-softlinks status code:', status
         print 'create-softlinks output:', output
-        status,output = commands.getstatusoutput("su - " + params.superuser + ' -c "' + params.ctdfs_cmd_dir + " -init " + params.keytab + '"')
-        print 'Init component status code:', status
-        print 'Init component output:', output
+		#如果是合并keytab所在主机
+		if params.domain_name == kerberos.getMergeKeytabsHost:
+		    merge_keytab_status,merge_keytab_output = commands.getstatusoutput("sh " + params.scripts_path + "/merge_keytab.sh " + params.merge_cmds_file + " " + params.merge_keytabs_path + " " + params.merge_keytab_name + " " + params.ctdfs_keytab_path)
+			Logger.info("merge_keytab_status = " + merge_keytab_status)
+			Logger.info("merge_keytab_output = " + merge_keytab_output)
+			chown_status,chown_output = commands.getstatusoutput("chown " + params.superuser + ":" + params.supergroup + " " + params.merge_keytab)
+			Logger.info("chown_status = " + chown_status)
+			Logger.info("chown_output = " + chown_output)
+			chmod_status,chmod_output = commands.getstatusoutput("chmod " + " 644 " + params.merge_keytab)
+			Logger.info("chmod_status = " + chmod_status)
+			Logger.info("chmod_output = " + chmod_output)
+			init_status,init_output = commands.getstatusoutput("su - " + params.superuser + ' -c "' + params.ctdfs_cmd_dir + " -init " + params.merge_keytab + '"')
+			Logger.info("init_status = " + init_status)
+			Logger.info("init_output = " + init_output)
         print '********** Install CTDFS_MASTER Operation End **********';
     def stop(self, env):
         print "********** Stop CTDFS_MASTER Operation Begin **********"
