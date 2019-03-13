@@ -8,19 +8,32 @@ from resource_management.core.environment import Environment
 from resource_management.core.logger import Logger
 from resource_management.libraries.script.script import Script
 from xml_utils import write_xml
-import kerberos
+#import kerberos
 
 class Master(Script):
     def install(self, env):
         import params
         env.set_params(params)
+
+        import kerberos
+        env.set_params(kerberos)
+        print 'kerberos status1 is : ', kerberos.getKerberosStatus()
+        config = Script.get_config()
+        kerberos_status = config['configurations']['ctdfs-kerberos-site']['dfs.kerberos.enabled']
+        print 'kerberos status2 is : ', kerberos_status
+        
+        merge_keytabs_host = config['configurations']['ctdfs-kerberos-site']['dfs.merge.keytab.host']
+        print 'merge_keytabs_host2 is :', merge_keytabs_host
+        print 'merge_keytabs_host1 is :', kerberos.getMergeKeytabsHost()
+
         print '********** Install CTDFS_MASTER Operation Begin **********';
         print "Current superuser is [" + params.superuser + "]; Current supergroup is [" + params.supergroup + "]; Current install_package_path is [" + params.install_package_path + "]"
         status,output = commands.getstatusoutput("sh " + params.scripts_path + "/auto-deploy.sh -u " + params.superuser + " -g " + params.supergroup + " -p " + params.install_package_path + " >> " + params.scripts_path + "/auto-deploy.log")
         print 'Execute auto-deploy.sh status code: ', status
         print 'Execute auto-deploy.sh output: ', output
         if status > 0:
-            exit();
+            #exit();
+            raise Exception("***********Execute auto-deploy.sh error!!!********", status)
         if not os.path.isdir(params.ctdfs_conf_dir):
             Directory([params.ctdfs_conf_dir],mode=0755,owner=params.superuser,group=params.supergroup,create_parents=True) 
         for filename in params.ctdfs_master_conf_filenames:
@@ -35,20 +48,39 @@ class Master(Script):
         status,output = commands.getstatusoutput("sh " + params.scripts_path + "/create-softlinks.sh " + params.target_conf_dir)				
         print 'create-softlinks status code:', status
         print 'create-softlinks output:', output
-		#如果是合并keytab所在主机
-		if params.domain_name == kerberos.getMergeKeytabsHost:
-		    merge_keytab_status,merge_keytab_output = commands.getstatusoutput("sh " + params.scripts_path + "/merge_keytab.sh " + params.merge_cmds_file + " " + params.merge_keytabs_path + " " + params.merge_keytab_name + " " + params.ctdfs_keytab_path)
-			Logger.info("merge_keytab_status = " + merge_keytab_status)
-			Logger.info("merge_keytab_output = " + merge_keytab_output)
-			chown_status,chown_output = commands.getstatusoutput("chown " + params.superuser + ":" + params.supergroup + " " + params.merge_keytab)
-			Logger.info("chown_status = " + chown_status)
-			Logger.info("chown_output = " + chown_output)
-			chmod_status,chmod_output = commands.getstatusoutput("chmod " + " 644 " + params.merge_keytab)
-			Logger.info("chmod_status = " + chmod_status)
-			Logger.info("chmod_output = " + chmod_output)
-			init_status,init_output = commands.getstatusoutput("su - " + params.superuser + ' -c "' + params.ctdfs_cmd_dir + " -init " + params.merge_keytab + '"')
-			Logger.info("init_status = " + init_status)
-			Logger.info("init_output = " + init_output)
+        #如果是合并keytab所在主机
+        #import kerberos
+        if kerberos.getKerberosStatus() == 'true':
+            if params.domain_name == kerberos.getMergeKeytabsHost():
+                Logger.info("dfs.kerberos.enabled is true and this host is MergeKeytabsHost!")
+                Logger.info("********** Initialization CTDFS Operation By Merge Keytab Begin **********")
+                merge_keytab_status,merge_keytab_output = commands.getstatusoutput("sh " + params.scripts_path + "/merge_keytab.sh " + params.merge_cmds_file + " " + params.merge_keytabs_path + " " + params.merge_keytab_name + " " + params.ctdfs_keytab_path)
+                Logger.info("merge_keytab_status = " + str(merge_keytab_status))
+                Logger.info("merge_keytab_output = " + merge_keytab_output)
+                if merge_keytab_status > 0:
+                    exit();
+                chown_status,chown_output = commands.getstatusoutput("chown " + params.superuser + ":" + params.supergroup + " " + params.merge_keytab)
+                Logger.info("chown_status = " + str(chown_status))
+                Logger.info("chown_output = " + chown_output)
+                chmod_status,chmod_output = commands.getstatusoutput("chmod " + " 644 " + params.merge_keytab)
+                Logger.info("chmod_status = " + str(chmod_status))
+                Logger.info("chmod_output = " + chmod_output)
+                init_status,init_output = commands.getstatusoutput("su - " + params.superuser + ' -c "' + params.ctdfs_cmd_dir + " -init " + params.merge_keytab + '"')
+                Logger.info("init_status = " + str(init_status))
+                Logger.info("init_output = " + init_output)
+                if init_status > 0:
+                    exit();
+                Logger.info("********** Initialization CTDFS Operation By Merge Keytab End **********")
+            else:
+                Logger.info("dfs.kerberos.enabled = true ,but this host is not MergeKeytabsHost,so not to init CTDFS")
+        else:
+            Logger.info("********** Initialization CTDFS Operation By Example Keytab Begin **********")
+            init_status,init_output = commands.getstatusoutput("su - " + params.superuser + ' -c "' + params.ctdfs_cmd_dir + " -init " + params.ctdfs_default_keytab + '"')
+            Logger.info("init_status = " + str(init_status))
+            Logger.info("init_output = " + init_output)
+            if init_status > 0:
+                exit();
+            Logger.info("********** Initialization CTDFS Operation By Example Keytab End **********")
         print '********** Install CTDFS_MASTER Operation End **********';
     def stop(self, env):
         print "********** Stop CTDFS_MASTER Operation Begin **********"

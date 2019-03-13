@@ -1,0 +1,57 @@
+superuser = [autodfs]
+supergroup = [autodfs]
+install_package_path = [/apps/ctdfs.tar.gz]
+The root path of autodfs user is :[/home/autodfs]
+testuser = []
+kerberos_status = []
+Config item of dfs.kerberos.enabled is error! It must be 'true' or 'false'!
+merge_keytabs_host = []
+kerberos_principal = []
+kerberos_password = []
+keytab_path = []
+keytab_name = []
+The domain_name is : [h3m1.ecloud.com]
+Authenticating as principal -w with password.
+Generate kerberos_principal fail!
+Authenticating as principal -w with password.
+Generate kerberos_keytab fail!
+Current user is : [root]
+Download install package fail and exit shell script execution now!
+superuser = [autodfs]
+supergroup = [autodfs]
+install_package_path = [/apps/ctdfs.tar.gz]
+The root path of autodfs user is :[/home/autodfs]
+testuser = []
+kerberos_status = []
+Config item of dfs.kerberos.enabled is error! It must be 'true' or 'false'!
+merge_keytabs_host = []
+kerberos_principal = []
+kerberos_password = []
+keytab_path = []
+keytab_name = []
+The domain_name is : [h3m1.ecloud.com]
+Authenticating as principal -w with password.
+Generate kerberos_principal fail!
+Authenticating as principal -w with password.
+Generate kerberos_keytab fail!
+Current user is : [root]
+Download install package fail and exit shell script execution now!
+superuser = [autodfs]
+supergroup = [autodfs]
+install_package_path = [/apps/ctdfs.tar.gz]
+The root path of autodfs user is :[/home/autodfs]
+testuser = []
+kerberos_status = []
+Config item of dfs.kerberos.enabled is error! It must be 'true' or 'false'!
+merge_keytabs_host = []
+kerberos_principal = []
+kerberos_password = []
+keytab_path = []
+keytab_name = []
+The domain_name is : [h3m1.ecloud.com]
+Authenticating as principal -w with password.
+Generate kerberos_principal fail!
+Authenticating as principal -w with password.
+Generate kerberos_keytab fail!
+Current user is : [root]
+Download install package fail and exit shell script execution now!

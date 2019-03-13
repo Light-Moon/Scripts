@@ -3,6 +3,9 @@ import sys,os
 import commands
 from resource_management import *
 from resource_management.libraries.script.script import Script
+from resource_management.core.exceptions import ComponentIsNotRunning
+from resource_management.core.environment import Environment
+from resource_management.core.logger import Logger
 
 config = Script.get_config()
 superuser = config['configurations']['dfs-site']['dfs.superuser']
@@ -37,3 +40,9 @@ merge_keytabs_path = ctdfs_keytab_path + '/merge'
 merge_cmds_file = ctdfs_keytab_path + '/merge_cmds.txt'
 merge_keytab_name = superuser + '.merge.service.keytab'
 merge_keytab = ctdfs_keytab_path + '/' + merge_keytab_name
+ctdfs_default_keytab = ctdfs_keytab_path + '/ctdfs.example.keytab'
+
+#def getSuperuser():
+    #config = Script.get_config()
+    #superuser = config['configurations']['dfs-site']['dfs.superuser']
+    #return superuser

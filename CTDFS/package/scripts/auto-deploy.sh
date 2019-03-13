@@ -69,29 +69,55 @@ echo "The root path of ${superuser} user is :[${user_root_path}]"
 
 ########################################
 #Step3: Configure kerberos for dfs user
+domain_name=`hostname -f`
+keytab_path = '/etc/security/keytabs'
+keytab_name = ${superuser} + '.' + ${domain_name} + '.keytab'
+cd ${shell_script_path}
+testuser=`python -c 'import params; prinet_params(params); params.getSuperuser()'`
+echo "testuser = [${testuser}]"
 kerberos_status=`python -c 'import kerberos; print kerberos.getKerberosStatus()'`
+echo "kerberos_status = [${kerberos_status}]"
+if [ "${kerberos_status}" != "true" ] && [ "${kerberos_status}" != "false" ];then
+	echo "Config item of dfs.kerberos.enabled is error! It must be 'true' or 'false'!"
+#        exit 1
+fi
 merge_keytabs_host=`python -c 'import kerberos; print kerberos.getMergeKeytabsHost()'`
-if [ "${kerberos_status}" == "true"]; then
+echo "merge_keytabs_host = [${merge_keytabs_host}]"
+#if [ "${kerberos_status}" == "true" ]; then
 	kerberos_principal=`python -c 'import kerberos; print kerberos.getKerberosPrincipal()'`
 	kerberos_password=`python -c 'import kerberos; print kerberos.getKerberosPassword()'`
-	keytab_path=`python -c 'import kerberos; print kerberos.getKeytabPath()'`
-	keytab_name=`python -c 'import kerberos; print kerberos.getKeytabName()'`
-	domain_name=`hostname -f`
+	#keytab_path=`python -c 'import kerberos; print kerberos.getKeytabPath()'`
+	#keytab_name=`python -c 'import kerberos; print kerberos.getKeytabName()'`
+	echo "kerberos_principal = [${kerberos_principal}]"
+	echo "kerberos_password = [${kerberos_password}]"
+	echo "keytab_path = [${keytab_path}]"
+	echo "keytab_name = [${keytab_name}]"
+	#domain_name=`hostname -f`
 	echo "The domain_name is : [${domain_name}]"
-	`/usr/bin/kadmin -p ${kerberos_principal} -w ${kerberos_password} -q 'ank -randkey ${superuser}/${domain_name}'`
-	`/usr/bin/kadmin -p ${kerberos_principal} -w ${kerberos_password} -q 'xst -k ${keytab_path}/${keytab_name} ${superuser}/${domain_name}'`
+	/usr/bin/kadmin -p ${kerberos_principal} -w ${kerberos_password} -q 'ank -randkey ${superuser}/${domain_name}'
+	if [ $? -eq 0 ]; then
+                echo "Generate kerberos_principal success!"
+	else
+		echo "Generate kerberos_principal fail!"
+        fi
+	/usr/bin/kadmin -p ${kerberos_principal} -w ${kerberos_password} -q 'xst -k ${keytab_path}/${keytab_name} ${superuser}/${domain_name}'
+        if [ $? -eq 0 ]; then
+                echo "Generate kerberos_keytab success!"
+        else
+                echo "Generate kerberos_keytab fail!"
+        fi
 	#echo "0 0 * * * /usr/bin/kinit -k -t ${keytab_path}/${keytab_name} ${superuser}/${domain_name}" >> /var/spool/cron/${superuser}
 	#`crontab /var/spool/cron/${superuser}`
 	#`chown ${superuser}:${supergroup} /var/spool/cron/${superuser}`&&`chmod 644 /var/spool/cron/${superuser}`
 	`chmod 644 ${keytab_path}/${keytab_name}`
 	echo "Current user is : [`whoami`]"
 	`su - ${superuser} -c "/usr/bin/kinit -k -t ${keytab_path}/${keytab_name} ${superuser}/${domain_name}"`
-	if ["${merge_keytabs_host}" == "${domain_name}"]; then
+	if [ "${merge_keytabs_host}" == "${domain_name}" ]; then
 		`cp ${keytab_path}/${keytab_name} ${user_root_path}/${component_folder_name}/keytab/merge` 
 	else
 		`scp ${keytab_path}/${keytab_name} ${superuser}@${merge_keytabs_host}:${user_root_path}/${component_folder_name}/keytab/merge`
 	fi
-fi
+#fi
 
 ########################################
 #Step4: Download installer package from hadoop cluster and to decompression.
