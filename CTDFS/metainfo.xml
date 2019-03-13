@@ -76,6 +76,7 @@
                 <config-type>dfs-default</config-type>
                 <config-type>ctdfs-rest-site</config-type>
                 <config-type>ctdfs-ambari-site</config-type>
+				<config-type>ctdfs-kerberos-site</config-type>
                 <config-type>dtfs-ni-ambari-site</config-type>
                 <config-type>dtfs-ni-hadoop-site</config-type>
                 <config-type>dtfs-ni-rest-site</config-type>
