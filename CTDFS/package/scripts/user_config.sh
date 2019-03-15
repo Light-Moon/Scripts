@@ -1,8 +1,8 @@
 #!/bin/bash
 #Default parameters value.
-superuser=dfs
-supergroup=dfs
-user_root_path=/home/${superuser}
+#superuser=dfs
+#supergroup=dfs
+#user_root_path=/home/${superuser}
 
 #If there is no args to specified, it will show usage.
 if [ $# = 0 ]; then
@@ -41,7 +41,7 @@ do
                 ;;
         esac
 done
-
+user_root_path=/home/${superuser}
 
 ########################################
 #Step1: Configure supergroup for CTDFS in host
@@ -51,7 +51,7 @@ if [ $? -ne 0 ]
 then
         echo "Group of [${supergroup}] is not exist! Now to create ..."
         groupadd $supergroup
-        if [ $? -ne 0 ]
+        if [ $? -eq 0 ]
         then
                 echo "Create group of [${supergroup}] success!"
         fi
@@ -66,7 +66,7 @@ superuser_infos=`cat /etc/passwd|grep ^${superuser}:`
 if [ -z "${superuser_infos}" ]; then
         echo "User of ${superuser} is not exist! Now to add user ..."
         useradd -g ${supergroup} -d ${user_root_path} -m ${superuser}
-        if [ $? -ne 0 ]
+        if [ $? -eq 0 ]
         then
                 echo "Add user of [${superuser}] success!"
         fi

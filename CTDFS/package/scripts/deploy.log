@@ -1,0 +1,432 @@
+superuser = [autodfs]
+supergroup = [autodfs]
+install_package_path = [/apps/ctdfs/deploy/ctdfs.tar.gz]
+merge_keytabs_host = [ctdfs2a1.ecloud.com]
+kerberos_principal = [root/admin]
+kerberos_password = [admin]
+/var/lib/ambari-agent/cache/stacks/HDP/2.5/services/CTDFS/package/scripts /var/lib/ambari-agent
+/var/lib/ambari-agent/cache/stacks/HDP/2.5/services/CTDFS/package/scripts: /var/lib/ambari-agent/cache/stacks/HDP/2.5/services/CTDFS/package/scripts: is a directory
+user_root_path = [/home/dfs]
+keytab_path = [/etc/security/keytabs]
+keytab_name = [autodfs.ctdfs2a1.ecloud.com.keytab]
+domain_name = [ctdfs2a1.ecloud.com]
+kerberos_status = [true]
+WARNING: no policy specified for autodfs/ctdfs2a1.ecloud.com@ECLOUD.COM; defaulting to no policy
+Authenticating as principal root/admin with password. Principal "autodfs/ctdfs2a1.ecloud.com@ECLOUD.COM" created.
+Generate kerberos_principal success!
+Authenticating as principal root/admin with password. Entry for principal autodfs/ctdfs2a1.ecloud.com with kvno 2, encryption type des3-cbc-sha1 added to keytab WRFILE:/etc/security/keytabs/autodfs.ctdfs2a1.ecloud.com.keytab. Entry for principal autodfs/ctdfs2a1.ecloud.com with kvno 2, encryption type arcfour-hmac added to keytab WRFILE:/etc/security/keytabs/autodfs.ctdfs2a1.ecloud.com.keytab. Entry for principal autodfs/ctdfs2a1.ecloud.com with kvno 2, encryption type des-hmac-sha1 added to keytab WRFILE:/etc/security/keytabs/autodfs.ctdfs2a1.ecloud.com.keytab. Entry for principal autodfs/ctdfs2a1.ecloud.com with kvno 2, encryption type des-cbc-crc added to keytab WRFILE:/etc/security/keytabs/autodfs.ctdfs2a1.ecloud.com.keytab.
+Generate kerberos_keytab success!
+Current user is : [root]
+cp: cannot create regular file ‘/home/dfs/ctdfs/keytab/merge’: No such file or directory
+Backup folder of ctdfs success!
+Download install package success!
+Decompression install package success!
+Analyze java_home success, it is : [/opt/jdk1.8.0_66]!
+Changed JAVA_HOME of ${ctdfs_path}/bin/config.sh success!
+Execute auto-deploy.sh script done!
+superuser = [autodfs]
+supergroup = [autodfs]
+install_package_path = [/apps/ctdfs/deploy/ctdfs.tar.gz]
+merge_keytabs_host = [ctdfs2a1.ecloud.com]
+kerberos_principal = [root/admin]
+kerberos_password = [admin]
+/var/lib/ambari-agent/cache/stacks/HDP/2.5/services/CTDFS/package/scripts /var/lib/ambari-agent
+/var/lib/ambari-agent/cache/stacks/HDP/2.5/services/CTDFS/package/scripts/auto-deploy.sh: line 70: /var/lib/ambari-agent/cache/stacks/HDP/2.5/services/CTDFS/package/scripts: Is a directory
+user_root_path = [/home/autodfs]
+keytab_path = [/etc/security/keytabs]
+keytab_name = [autodfs.ctdfs2a1.ecloud.com.keytab]
+domain_name = [ctdfs2a1.ecloud.com]
+kerberos_status = [true]
+********** Kerberos Authentication Operation Start **********
+WARNING: no policy specified for autodfs/ctdfs2a1.ecloud.com@ECLOUD.COM; defaulting to no policy
+add_principal: Principal or policy already exists while creating "autodfs/ctdfs2a1.ecloud.com@ECLOUD.COM".
+Authenticating as principal root/admin with password.
+Generate kerberos_principal success!
+Authenticating as principal root/admin with password. Entry for principal autodfs/ctdfs2a1.ecloud.com with kvno 4, encryption type des3-cbc-sha1 added to keytab WRFILE:/etc/security/keytabs/autodfs.ctdfs2a1.ecloud.com.keytab. Entry for principal autodfs/ctdfs2a1.ecloud.com with kvno 4, encryption type arcfour-hmac added to keytab WRFILE:/etc/security/keytabs/autodfs.ctdfs2a1.ecloud.com.keytab. Entry for principal autodfs/ctdfs2a1.ecloud.com with kvno 4, encryption type des-hmac-sha1 added to keytab WRFILE:/etc/security/keytabs/autodfs.ctdfs2a1.ecloud.com.keytab. Entry for principal autodfs/ctdfs2a1.ecloud.com with kvno 4, encryption type des-cbc-crc added to keytab WRFILE:/etc/security/keytabs/autodfs.ctdfs2a1.ecloud.com.keytab.
+Generate kerberos_keytab success!
+Current user is : [root]
+Download install package success!
+Decompression install package success!
+Analyze java_home success, it is : [/opt/jdk1.8.0_66]!
+Changed JAVA_HOME of ${ctdfs_path}/bin/config.sh success!
+Execute auto-deploy.sh script done!
+superuser = [autodfs]
+supergroup = [autodfs]
+install_package_path = [/apps/ctdfs/deploy/ctdfs.tar.gz]
+merge_keytabs_host = [ctdfs2a1.ecloud.com]
+kerberos_principal = [root/admin]
+kerberos_password = [admin]
+/var/lib/ambari-agent/cache/stacks/HDP/2.5/services/CTDFS/package/scripts /var/lib/ambari-agent
+/var/lib/ambari-agent/cache/stacks/HDP/2.5/services/CTDFS/package/scripts/auto-deploy.sh: line 70: /var/lib/ambari-agent/cache/stacks/HDP/2.5/services/CTDFS/package/scripts: Is a directory
+user_root_path = [/home/autodfs]
+keytab_path = [/etc/security/keytabs]
+keytab_name = [autodfs.ctdfs2a1.ecloud.com.keytab]
+domain_name = [ctdfs2a1.ecloud.com]
+kerberos_status = [true]
+********** Kerberos Authentication Operation Start **********
+WARNING: no policy specified for autodfs/ctdfs2a1.ecloud.com@ECLOUD.COM; defaulting to no policy
+add_principal: Principal or policy already exists while creating "autodfs/ctdfs2a1.ecloud.com@ECLOUD.COM".
+Authenticating as principal root/admin with password.
+Generate kerberos_principal success!
+Authenticating as principal root/admin with password. Entry for principal autodfs/ctdfs2a1.ecloud.com with kvno 5, encryption type des3-cbc-sha1 added to keytab WRFILE:/etc/security/keytabs/autodfs.ctdfs2a1.ecloud.com.keytab. Entry for principal autodfs/ctdfs2a1.ecloud.com with kvno 5, encryption type arcfour-hmac added to keytab WRFILE:/etc/security/keytabs/autodfs.ctdfs2a1.ecloud.com.keytab. Entry for principal autodfs/ctdfs2a1.ecloud.com with kvno 5, encryption type des-hmac-sha1 added to keytab WRFILE:/etc/security/keytabs/autodfs.ctdfs2a1.ecloud.com.keytab. Entry for principal autodfs/ctdfs2a1.ecloud.com with kvno 5, encryption type des-cbc-crc added to keytab WRFILE:/etc/security/keytabs/autodfs.ctdfs2a1.ecloud.com.keytab.
+Generate kerberos_keytab success!
+Current user is : [root]
+Backup folder of ctdfs success!
+Download install package success!
+Decompression install package success!
+Analyze java_home success, it is : [/opt/jdk1.8.0_66]!
+Changed JAVA_HOME of ${ctdfs_path}/bin/config.sh success!
+Execute auto-deploy.sh script done!
+ctdfs_conf_file is : [ctdfs-ambari-site.xml]
+ctdfs_conf_file is : [ctdfs-rest-site.xml]
+ctdfs_conf_file is : [dfs-site.xml]
+ctdfs_conf_file is : [dfs-default.xml]
+superuser = [autodfs]
+supergroup = [autodfs]
+install_package_path = [/apps/ctdfs/deploy/ctdfs.tar.gz]
+merge_keytabs_host = [ctdfs2a1.ecloud.com]
+kerberos_principal = [root/admin]
+kerberos_password = [admin]
+/var/lib/ambari-agent/cache/stacks/HDP/2.5/services/CTDFS/package/scripts /var/lib/ambari-agent
+/var/lib/ambari-agent/cache/stacks/HDP/2.5/services/CTDFS/package/scripts/auto-deploy.sh: line 70: /var/lib/ambari-agent/cache/stacks/HDP/2.5/services/CTDFS/package/scripts: Is a directory
+user_root_path = [/home/autodfs]
+keytab_path = [/etc/security/keytabs]
+keytab_name = [autodfs.ctdfs2a1.ecloud.com.keytab]
+domain_name = [ctdfs2a1.ecloud.com]
+kerberos_status = [true]
+********** Kerberos Authentication Operation Start **********
+WARNING: no policy specified for autodfs/ctdfs2a1.ecloud.com@ECLOUD.COM; defaulting to no policy
+add_principal: Principal or policy already exists while creating "autodfs/ctdfs2a1.ecloud.com@ECLOUD.COM".
+Authenticating as principal root/admin with password.
+Generate kerberos_principal success!
+Authenticating as principal root/admin with password. Entry for principal autodfs/ctdfs2a1.ecloud.com with kvno 6, encryption type des3-cbc-sha1 added to keytab WRFILE:/etc/security/keytabs/autodfs.ctdfs2a1.ecloud.com.keytab. Entry for principal autodfs/ctdfs2a1.ecloud.com with kvno 6, encryption type arcfour-hmac added to keytab WRFILE:/etc/security/keytabs/autodfs.ctdfs2a1.ecloud.com.keytab. Entry for principal autodfs/ctdfs2a1.ecloud.com with kvno 6, encryption type des-hmac-sha1 added to keytab WRFILE:/etc/security/keytabs/autodfs.ctdfs2a1.ecloud.com.keytab. Entry for principal autodfs/ctdfs2a1.ecloud.com with kvno 6, encryption type des-cbc-crc added to keytab WRFILE:/etc/security/keytabs/autodfs.ctdfs2a1.ecloud.com.keytab.
+Generate kerberos_keytab success!
+Current user is : [root]
+Backup folder of ctdfs success!
+Download install package success!
+Decompression install package success!
+Analyze java_home success, it is : [/opt/jdk1.8.0_66]!
+Changed JAVA_HOME of ${ctdfs_path}/bin/config.sh success!
+Execute auto-deploy.sh script done!
+ctdfs_conf_file is : [ctdfs-ambari-site.xml]
+ctdfs_conf_file is : [ctdfs-rest-site.xml]
+ctdfs_conf_file is : [dfs-site.xml]
+ctdfs_conf_file is : [dfs-default.xml]
+superuser = [autodfs]
+supergroup = [autodfs]
+install_package_path = [/apps/ctdfs/deploy/ctdfs.tar.gz]
+merge_keytabs_host = [ctdfs2a1.ecloud.com]
+kerberos_principal = [root/admin]
+kerberos_password = [admin]
+/var/lib/ambari-agent/cache/stacks/HDP/2.5/services/CTDFS/package/scripts /var/lib/ambari-agent
+/var/lib/ambari-agent/cache/stacks/HDP/2.5/services/CTDFS/package/scripts/auto-deploy.sh: line 70: /var/lib/ambari-agent/cache/stacks/HDP/2.5/services/CTDFS/package/scripts: Is a directory
+user_root_path = [/home/autodfs]
+keytab_path = [/etc/security/keytabs]
+keytab_name = [autodfs.ctdfs2a1.ecloud.com.keytab]
+domain_name = [ctdfs2a1.ecloud.com]
+kerberos_status = [true]
+********** Kerberos Authentication Operation Start **********
+WARNING: no policy specified for autodfs/ctdfs2a1.ecloud.com@ECLOUD.COM; defaulting to no policy
+add_principal: Principal or policy already exists while creating "autodfs/ctdfs2a1.ecloud.com@ECLOUD.COM".
+Authenticating as principal root/admin with password.
+Generate kerberos_principal success!
+Authenticating as principal root/admin with password. Entry for principal autodfs/ctdfs2a1.ecloud.com with kvno 7, encryption type des3-cbc-sha1 added to keytab WRFILE:/etc/security/keytabs/autodfs.ctdfs2a1.ecloud.com.keytab. Entry for principal autodfs/ctdfs2a1.ecloud.com with kvno 7, encryption type arcfour-hmac added to keytab WRFILE:/etc/security/keytabs/autodfs.ctdfs2a1.ecloud.com.keytab. Entry for principal autodfs/ctdfs2a1.ecloud.com with kvno 7, encryption type des-hmac-sha1 added to keytab WRFILE:/etc/security/keytabs/autodfs.ctdfs2a1.ecloud.com.keytab. Entry for principal autodfs/ctdfs2a1.ecloud.com with kvno 7, encryption type des-cbc-crc added to keytab WRFILE:/etc/security/keytabs/autodfs.ctdfs2a1.ecloud.com.keytab.
+Generate kerberos_keytab success!
+Current user is : [root]
+Backup folder of ctdfs success!
+Download install package success!
+Decompression install package success!
+Analyze java_home success, it is : [/opt/jdk1.8.0_66]!
+Changed JAVA_HOME of ${ctdfs_path}/bin/config.sh success!
+Execute auto-deploy.sh script done!
+ctdfs_conf_file is : [ctdfs-ambari-site.xml]
+ctdfs_conf_file is : [ctdfs-rest-site.xml]
+ctdfs_conf_file is : [dfs-site.xml]
+ctdfs_conf_file is : [dfs-default.xml]
+superuser = [autodfs]
+supergroup = [autodfs]
+install_package_path = [/apps/ctdfs/deploy/ctdfs.tar.gz]
+merge_keytabs_host = [ctdfs2a1.ecloud.com]
+kerberos_principal = [root/admin]
+kerberos_password = [admin]
+/var/lib/ambari-agent/cache/stacks/HDP/2.5/services/CTDFS/package/scripts /var/lib/ambari-agent
+/var/lib/ambari-agent/cache/stacks/HDP/2.5/services/CTDFS/package/scripts/auto-deploy.sh: line 70: /var/lib/ambari-agent/cache/stacks/HDP/2.5/services/CTDFS/package/scripts: Is a directory
+user_root_path = [/home/autodfs]
+keytab_path = [/etc/security/keytabs]
+keytab_name = [autodfs.ctdfs2a1.ecloud.com.keytab]
+domain_name = [ctdfs2a1.ecloud.com]
+kerberos_status = [true]
+********** Kerberos Authentication Operation Start **********
+WARNING: no policy specified for autodfs/ctdfs2a1.ecloud.com@ECLOUD.COM; defaulting to no policy
+add_principal: Principal or policy already exists while creating "autodfs/ctdfs2a1.ecloud.com@ECLOUD.COM".
+Authenticating as principal root/admin with password.
+Generate kerberos_principal success!
+Authenticating as principal root/admin with password. Entry for principal autodfs/ctdfs2a1.ecloud.com with kvno 8, encryption type des3-cbc-sha1 added to keytab WRFILE:/etc/security/keytabs/autodfs.ctdfs2a1.ecloud.com.keytab. Entry for principal autodfs/ctdfs2a1.ecloud.com with kvno 8, encryption type arcfour-hmac added to keytab WRFILE:/etc/security/keytabs/autodfs.ctdfs2a1.ecloud.com.keytab. Entry for principal autodfs/ctdfs2a1.ecloud.com with kvno 8, encryption type des-hmac-sha1 added to keytab WRFILE:/etc/security/keytabs/autodfs.ctdfs2a1.ecloud.com.keytab. Entry for principal autodfs/ctdfs2a1.ecloud.com with kvno 8, encryption type des-cbc-crc added to keytab WRFILE:/etc/security/keytabs/autodfs.ctdfs2a1.ecloud.com.keytab.
+Generate kerberos_keytab success!
+Current user is : [root]
+Backup folder of ctdfs success!
+Download install package success!
+Decompression install package success!
+Analyze java_home success, it is : [/opt/jdk1.8.0_66]!
+Changed JAVA_HOME of ${ctdfs_path}/bin/config.sh success!
+/var/lib/ambari-agent/cache/stacks/HDP/2.5/services/CTDFS/package/scripts/auto-deploy.sh: line 185: -k: command not found
+kinit: Keytab contains no suitable keys for hbase/@ECLOUD.COM while getting initial credentials
+HBase initialization fail!
+superuser = [autodfs]
+supergroup = [autodfs]
+install_package_path = [/apps/ctdfs/deploy/ctdfs.tar.gz]
+merge_keytabs_host = [ctdfs2a1.ecloud.com]
+kerberos_principal = [root/admin]
+kerberos_password = [admin]
+/var/lib/ambari-agent/cache/stacks/HDP/2.5/services/CTDFS/package/scripts /var/lib/ambari-agent
+/var/lib/ambari-agent/cache/stacks/HDP/2.5/services/CTDFS/package/scripts/auto-deploy.sh: line 70: /var/lib/ambari-agent/cache/stacks/HDP/2.5/services/CTDFS/package/scripts: Is a directory
+user_root_path = [/home/autodfs]
+keytab_path = [/etc/security/keytabs]
+keytab_name = [autodfs.ctdfs2a1.ecloud.com.keytab]
+domain_name = [ctdfs2a1.ecloud.com]
+kerberos_status = [true]
+********** Kerberos Authentication Operation Start **********
+WARNING: no policy specified for autodfs/ctdfs2a1.ecloud.com@ECLOUD.COM; defaulting to no policy
+add_principal: Principal or policy already exists while creating "autodfs/ctdfs2a1.ecloud.com@ECLOUD.COM".
+Authenticating as principal root/admin with password.
+Generate kerberos_principal success!
+Authenticating as principal root/admin with password. Entry for principal autodfs/ctdfs2a1.ecloud.com with kvno 9, encryption type des3-cbc-sha1 added to keytab WRFILE:/etc/security/keytabs/autodfs.ctdfs2a1.ecloud.com.keytab. Entry for principal autodfs/ctdfs2a1.ecloud.com with kvno 9, encryption type arcfour-hmac added to keytab WRFILE:/etc/security/keytabs/autodfs.ctdfs2a1.ecloud.com.keytab. Entry for principal autodfs/ctdfs2a1.ecloud.com with kvno 9, encryption type des-hmac-sha1 added to keytab WRFILE:/etc/security/keytabs/autodfs.ctdfs2a1.ecloud.com.keytab. Entry for principal autodfs/ctdfs2a1.ecloud.com with kvno 9, encryption type des-cbc-crc added to keytab WRFILE:/etc/security/keytabs/autodfs.ctdfs2a1.ecloud.com.keytab.
+Generate kerberos_keytab success!
+Current user is : [root]
+Backup folder of ctdfs success!
+Download install package success!
+Decompression install package success!
+Analyze java_home success, it is : [/opt/jdk1.8.0_66]!
+Changed JAVA_HOME of ${ctdfs_path}/bin/config.sh success!
+kinit: Keytab contains no suitable keys for hbase/hbase-ctdfs2@ECLOUD.COM while getting initial credentials
+HBase initialization fail!
+superuser = [autodfs]
+supergroup = [autodfs]
+install_package_path = [/apps/ctdfs/deploy/ctdfs.tar.gz]
+merge_keytabs_host = [ctdfs2a1.ecloud.com]
+kerberos_principal = [root/admin]
+kerberos_password = [admin]
+/var/lib/ambari-agent/cache/stacks/HDP/2.5/services/CTDFS/package/scripts /var/lib/ambari-agent
+/var/lib/ambari-agent/cache/stacks/HDP/2.5/services/CTDFS/package/scripts/auto-deploy.sh: line 70: /var/lib/ambari-agent/cache/stacks/HDP/2.5/services/CTDFS/package/scripts: Is a directory
+user_root_path = [/home/autodfs]
+keytab_path = [/etc/security/keytabs]
+keytab_name = [autodfs.ctdfs2a1.ecloud.com.keytab]
+domain_name = [ctdfs2a1.ecloud.com]
+kerberos_status = [true]
+********** Kerberos Authentication Operation Start **********
+WARNING: no policy specified for autodfs/ctdfs2a1.ecloud.com@ECLOUD.COM; defaulting to no policy
+add_principal: Principal or policy already exists while creating "autodfs/ctdfs2a1.ecloud.com@ECLOUD.COM".
+Authenticating as principal root/admin with password.
+Generate kerberos_principal success!
+Authenticating as principal root/admin with password. Entry for principal autodfs/ctdfs2a1.ecloud.com with kvno 10, encryption type des3-cbc-sha1 added to keytab WRFILE:/etc/security/keytabs/autodfs.ctdfs2a1.ecloud.com.keytab. Entry for principal autodfs/ctdfs2a1.ecloud.com with kvno 10, encryption type arcfour-hmac added to keytab WRFILE:/etc/security/keytabs/autodfs.ctdfs2a1.ecloud.com.keytab. Entry for principal autodfs/ctdfs2a1.ecloud.com with kvno 10, encryption type des-hmac-sha1 added to keytab WRFILE:/etc/security/keytabs/autodfs.ctdfs2a1.ecloud.com.keytab. Entry for principal autodfs/ctdfs2a1.ecloud.com with kvno 10, encryption type des-cbc-crc added to keytab WRFILE:/etc/security/keytabs/autodfs.ctdfs2a1.ecloud.com.keytab.
+Generate kerberos_keytab success!
+Current user is : [root]
+Backup folder of ctdfs success!
+Download install package success!
+Decompression install package success!
+Analyze java_home success, it is : [/opt/jdk1.8.0_66]!
+Changed JAVA_HOME of ${ctdfs_path}/bin/config.sh success!
+hbase_sub_principal = [hbase-ctdfs2]
+kinit: Keytab contains no suitable keys for hbase/hbase-ctdfs2@ECLOUD.COM while getting initial credentials
+HBase initialization fail!
+superuser = [autodfs]
+supergroup = [autodfs]
+install_package_path = [/apps/ctdfs/deploy/ctdfs.tar.gz]
+merge_keytabs_host = [ctdfs2a1.ecloud.com]
+kerberos_principal = [root/admin]
+kerberos_password = [admin]
+/var/lib/ambari-agent/cache/stacks/HDP/2.5/services/CTDFS/package/scripts /var/lib/ambari-agent
+/var/lib/ambari-agent/cache/stacks/HDP/2.5/services/CTDFS/package/scripts/auto-deploy.sh: line 70: /var/lib/ambari-agent/cache/stacks/HDP/2.5/services/CTDFS/package/scripts: Is a directory
+user_root_path = [/home/autodfs]
+keytab_path = [/etc/security/keytabs]
+keytab_name = [autodfs.ctdfs2a1.ecloud.com.keytab]
+domain_name = [ctdfs2a1.ecloud.com]
+kerberos_status = [true]
+********** Kerberos Authentication Operation Start **********
+WARNING: no policy specified for autodfs/ctdfs2a1.ecloud.com@ECLOUD.COM; defaulting to no policy
+add_principal: Principal or policy already exists while creating "autodfs/ctdfs2a1.ecloud.com@ECLOUD.COM".
+Authenticating as principal root/admin with password.
+Generate kerberos_principal success!
+Authenticating as principal root/admin with password. Entry for principal autodfs/ctdfs2a1.ecloud.com with kvno 11, encryption type des3-cbc-sha1 added to keytab WRFILE:/etc/security/keytabs/autodfs.ctdfs2a1.ecloud.com.keytab. Entry for principal autodfs/ctdfs2a1.ecloud.com with kvno 11, encryption type arcfour-hmac added to keytab WRFILE:/etc/security/keytabs/autodfs.ctdfs2a1.ecloud.com.keytab. Entry for principal autodfs/ctdfs2a1.ecloud.com with kvno 11, encryption type des-hmac-sha1 added to keytab WRFILE:/etc/security/keytabs/autodfs.ctdfs2a1.ecloud.com.keytab. Entry for principal autodfs/ctdfs2a1.ecloud.com with kvno 11, encryption type des-cbc-crc added to keytab WRFILE:/etc/security/keytabs/autodfs.ctdfs2a1.ecloud.com.keytab.
+Generate kerberos_keytab success!
+Current user is : [root]
+Backup folder of ctdfs success!
+Download install package success!
+Decompression install package success!
+Analyze java_home success, it is : [/opt/jdk1.8.0_66]!
+Changed JAVA_HOME of ${ctdfs_path}/bin/config.sh success!
+hbase_sub_principal = [hbase-ctdfs2]
+HBase initialization success!
+/var/lib/ambari-agent/cache/stacks/HDP/2.5/services/CTDFS/package/scripts: /var/lib/ambari-agent/cache/stacks/HDP/2.5/services/CTDFS/package/scripts: is a directory
+-bash: line 2: /var/lib/ambari-agent/cache/stacks/HDP/2.5/services/CTDFS/package/scripts: Is a directory
+-bash: line 3: /var/lib/ambari-agent/namespace.log: No such file or directory
+Last login: Fri Mar 15 21:50:52 CST 2019
+Execute auto-deploy.sh script done!
+ctdfs_conf_file is : [ctdfs-ambari-site.xml]
+ctdfs_conf_file is : [ctdfs-rest-site.xml]
+ctdfs_conf_file is : [dfs-site.xml]
+ctdfs_conf_file is : [dfs-default.xml]
+superuser = [autodfs]
+supergroup = [autodfs]
+install_package_path = [/apps/ctdfs/deploy/ctdfs.tar.gz]
+merge_keytabs_host = [ctdfs2a1.ecloud.com]
+kerberos_principal = [root/admin]
+kerberos_password = [admin]
+/var/lib/ambari-agent/cache/stacks/HDP/2.5/services/CTDFS/package/scripts /var/lib/ambari-agent
+/var/lib/ambari-agent/cache/stacks/HDP/2.5/services/CTDFS/package/scripts/auto-deploy.sh: line 70: /var/lib/ambari-agent/cache/stacks/HDP/2.5/services/CTDFS/package/scripts: Is a directory
+user_root_path = [/home/autodfs]
+keytab_path = [/etc/security/keytabs]
+keytab_name = [autodfs.ctdfs2a1.ecloud.com.keytab]
+domain_name = [ctdfs2a1.ecloud.com]
+kerberos_status = [true]
+********** Kerberos Authentication Operation Start **********
+WARNING: no policy specified for autodfs/ctdfs2a1.ecloud.com@ECLOUD.COM; defaulting to no policy
+add_principal: Principal or policy already exists while creating "autodfs/ctdfs2a1.ecloud.com@ECLOUD.COM".
+Authenticating as principal root/admin with password.
+Generate kerberos_principal success!
+Authenticating as principal root/admin with password. Entry for principal autodfs/ctdfs2a1.ecloud.com with kvno 12, encryption type des3-cbc-sha1 added to keytab WRFILE:/etc/security/keytabs/autodfs.ctdfs2a1.ecloud.com.keytab. Entry for principal autodfs/ctdfs2a1.ecloud.com with kvno 12, encryption type arcfour-hmac added to keytab WRFILE:/etc/security/keytabs/autodfs.ctdfs2a1.ecloud.com.keytab. Entry for principal autodfs/ctdfs2a1.ecloud.com with kvno 12, encryption type des-hmac-sha1 added to keytab WRFILE:/etc/security/keytabs/autodfs.ctdfs2a1.ecloud.com.keytab. Entry for principal autodfs/ctdfs2a1.ecloud.com with kvno 12, encryption type des-cbc-crc added to keytab WRFILE:/etc/security/keytabs/autodfs.ctdfs2a1.ecloud.com.keytab.
+Generate kerberos_keytab success!
+Current user is : [root]
+Backup folder of ctdfs success!
+Download install package success!
+Decompression install package success!
+Analyze java_home success, it is : [/opt/jdk1.8.0_66]!
+Changed JAVA_HOME of ${ctdfs_path}/bin/config.sh success!
+hbase_sub_principal = [hbase-ctdfs2]
+HBase initialization success!
+/var/lib/ambari-agent/cache/stacks/HDP/2.5/services/CTDFS/package/scripts: /var/lib/ambari-agent/cache/stacks/HDP/2.5/services/CTDFS/package/scripts: is a directory
+-bash: line 2: /var/lib/ambari-agent/hbase_namespace.sh: No such file or directory
+Last login: Fri Mar 15 21:54:24 CST 2019
+Execute auto-deploy.sh script done!
+ctdfs_conf_file is : [ctdfs-ambari-site.xml]
+ctdfs_conf_file is : [ctdfs-rest-site.xml]
+ctdfs_conf_file is : [dfs-site.xml]
+ctdfs_conf_file is : [dfs-default.xml]
+superuser = [autodfs]
+supergroup = [autodfs]
+install_package_path = [/apps/ctdfs/deploy/ctdfs.tar.gz]
+merge_keytabs_host = [ctdfs2a1.ecloud.com]
+kerberos_principal = [root/admin]
+kerberos_password = [admin]
+shell_script_path = [/var/lib/ambari-agent/cache/stacks/HDP/2.5/services/CTDFS/package/scripts]
+/var/lib/ambari-agent/cache/stacks/HDP/2.5/services/CTDFS/package/scripts/auto-deploy.sh: line 71: /var/lib/ambari-agent/cache/stacks/HDP/2.5/services/CTDFS/package/scripts/user_config.sh: Permission denied
+user_root_path = [/home/autodfs]
+keytab_path = [/etc/security/keytabs]
+keytab_name = [autodfs.ctdfs2a1.ecloud.com.keytab]
+domain_name = [ctdfs2a1.ecloud.com]
+kerberos_status = [true]
+********** Kerberos Authentication Operation Start **********
+WARNING: no policy specified for autodfs/ctdfs2a1.ecloud.com@ECLOUD.COM; defaulting to no policy
+add_principal: Principal or policy already exists while creating "autodfs/ctdfs2a1.ecloud.com@ECLOUD.COM".
+Authenticating as principal root/admin with password.
+Generate kerberos_principal success!
+Authenticating as principal root/admin with password. Entry for principal autodfs/ctdfs2a1.ecloud.com with kvno 13, encryption type des3-cbc-sha1 added to keytab WRFILE:/etc/security/keytabs/autodfs.ctdfs2a1.ecloud.com.keytab. Entry for principal autodfs/ctdfs2a1.ecloud.com with kvno 13, encryption type arcfour-hmac added to keytab WRFILE:/etc/security/keytabs/autodfs.ctdfs2a1.ecloud.com.keytab. Entry for principal autodfs/ctdfs2a1.ecloud.com with kvno 13, encryption type des-hmac-sha1 added to keytab WRFILE:/etc/security/keytabs/autodfs.ctdfs2a1.ecloud.com.keytab. Entry for principal autodfs/ctdfs2a1.ecloud.com with kvno 13, encryption type des-cbc-crc added to keytab WRFILE:/etc/security/keytabs/autodfs.ctdfs2a1.ecloud.com.keytab.
+Generate kerberos_keytab success!
+Current user is : [root]
+Backup folder of ctdfs success!
+Download install package success!
+Decompression install package success!
+Analyze java_home success, it is : [/opt/jdk1.8.0_66]!
+Changed JAVA_HOME of ${ctdfs_path}/bin/config.sh success!
+hbase_sub_principal = [hbase-ctdfs2]
+HBase initialization success!
+namespace = [autodfs]
+shell_script_path = [/var/lib/ambari-agent/cache/stacks/HDP/2.5/services/CTDFS/package/scripts]
+ERROR RuntimeError: Unknown namespace autodfs!
+/var/lib/ambari-agent/cache/stacks/HDP/2.5/services/CTDFS/package/scripts/hbase_namespace.sh: line 5: [: too many arguments
+Namespace of [autodfs] is not exist.
+********** Create and Grant Namespace Begin **********
+HBase Shell; enter 'help<RETURN>' for list of supported commands.
+Type "exit<RETURN>" to leave the HBase Shell
+Version 1.1.2.2.5.3.0-37, rcb8c969d1089f1a34e9df11b6eeb96e69bcf878d, Tue Nov 29 18:48:22 UTC 2016
+
+create_namespace 'autodfs'
+0 row(s) in 0.2830 seconds
+
+grant 'autodfs', 'RWXCA', '@autodfs'
+0 row(s) in 0.2750 seconds
+
+quit    
+********** Create and Grant Namespace End **********
+Last login: Fri Mar 15 22:19:33 CST 2019
+Execute auto-deploy.sh script done!
+ctdfs_conf_file is : [ctdfs-ambari-site.xml]
+ctdfs_conf_file is : [ctdfs-rest-site.xml]
+ctdfs_conf_file is : [dfs-site.xml]
+ctdfs_conf_file is : [dfs-default.xml]
+superuser = [autodfs]
+supergroup = [autodfs]
+install_package_path = [/apps/ctdfs/deploy/ctdfs.tar.gz]
+merge_keytabs_host = [ctdfs2a1.ecloud.com]
+kerberos_principal = [root/admin]
+kerberos_password = [admin]
+shell_script_path = [/var/lib/ambari-agent/cache/stacks/HDP/2.5/services/CTDFS/package/scripts]
+/var/lib/ambari-agent/cache/stacks/HDP/2.5/services/CTDFS/package/scripts/auto-deploy.sh: line 71: /var/lib/ambari-agent/cache/stacks/HDP/2.5/services/CTDFS/package/scripts/user_config.sh: Permission denied
+user_root_path = [/home/autodfs]
+keytab_path = [/etc/security/keytabs]
+keytab_name = [autodfs.ctdfs2a1.ecloud.com.keytab]
+domain_name = [ctdfs2a1.ecloud.com]
+kerberos_status = [true]
+********** Kerberos Authentication Operation Start **********
+WARNING: no policy specified for autodfs/ctdfs2a1.ecloud.com@ECLOUD.COM; defaulting to no policy
+add_principal: Principal or policy already exists while creating "autodfs/ctdfs2a1.ecloud.com@ECLOUD.COM".
+Authenticating as principal root/admin with password.
+Generate kerberos_principal success!
+Authenticating as principal root/admin with password. Entry for principal autodfs/ctdfs2a1.ecloud.com with kvno 14, encryption type des3-cbc-sha1 added to keytab WRFILE:/etc/security/keytabs/autodfs.ctdfs2a1.ecloud.com.keytab. Entry for principal autodfs/ctdfs2a1.ecloud.com with kvno 14, encryption type arcfour-hmac added to keytab WRFILE:/etc/security/keytabs/autodfs.ctdfs2a1.ecloud.com.keytab. Entry for principal autodfs/ctdfs2a1.ecloud.com with kvno 14, encryption type des-hmac-sha1 added to keytab WRFILE:/etc/security/keytabs/autodfs.ctdfs2a1.ecloud.com.keytab. Entry for principal autodfs/ctdfs2a1.ecloud.com with kvno 14, encryption type des-cbc-crc added to keytab WRFILE:/etc/security/keytabs/autodfs.ctdfs2a1.ecloud.com.keytab.
+Generate kerberos_keytab success!
+Current user is : [root]
+Backup folder of ctdfs success!
+Download install package success!
+Decompression install package success!
+Analyze java_home success, it is : [/opt/jdk1.8.0_66]!
+Changed JAVA_HOME of ${ctdfs_path}/bin/config.sh success!
+hbase_sub_principal = [hbase-ctdfs2]
+HBase initialization success!
+namespace = [autodfs]
+shell_script_path = [/var/lib/ambari-agent/cache/stacks/HDP/2.5/services/CTDFS/package/scripts]
+
+Namespace of [autodfs] is exist.
+Last login: Fri Mar 15 22:28:38 CST 2019
+Execute auto-deploy.sh script done!
+ctdfs_conf_file is : [ctdfs-ambari-site.xml]
+ctdfs_conf_file is : [ctdfs-rest-site.xml]
+ctdfs_conf_file is : [dfs-default.xml]
+ctdfs_conf_file is : [dfs-site.xml]
+superuser = [autodfs]
+supergroup = [autodfs]
+install_package_path = [/apps/ctdfs/deploy/ctdfs.tar.gz]
+merge_keytabs_host = [ctdfs2a1.ecloud.com]
+kerberos_principal = [root/admin]
+kerberos_password = [admin]
+shell_script_path = [/var/lib/ambari-agent/cache/stacks/HDP/2.5/services/CTDFS/package/scripts]
+/var/lib/ambari-agent/cache/stacks/HDP/2.5/services/CTDFS/package/scripts/auto-deploy.sh: line 71: /var/lib/ambari-agent/cache/stacks/HDP/2.5/services/CTDFS/package/scripts/user_config.sh: Permission denied
+user_root_path = [/home/autodfs]
+keytab_path = [/etc/security/keytabs]
+keytab_name = [autodfs.ctdfs2a1.ecloud.com.keytab]
+domain_name = [ctdfs2a1.ecloud.com]
+kerberos_status = [true]
+********** Kerberos Authentication Operation Start **********
+WARNING: no policy specified for autodfs/ctdfs2a1.ecloud.com@ECLOUD.COM; defaulting to no policy
+add_principal: Principal or policy already exists while creating "autodfs/ctdfs2a1.ecloud.com@ECLOUD.COM".
+Authenticating as principal root/admin with password.
+Generate kerberos_principal success!
+Authenticating as principal root/admin with password. Entry for principal autodfs/ctdfs2a1.ecloud.com with kvno 15, encryption type des3-cbc-sha1 added to keytab WRFILE:/etc/security/keytabs/autodfs.ctdfs2a1.ecloud.com.keytab. Entry for principal autodfs/ctdfs2a1.ecloud.com with kvno 15, encryption type arcfour-hmac added to keytab WRFILE:/etc/security/keytabs/autodfs.ctdfs2a1.ecloud.com.keytab. Entry for principal autodfs/ctdfs2a1.ecloud.com with kvno 15, encryption type des-hmac-sha1 added to keytab WRFILE:/etc/security/keytabs/autodfs.ctdfs2a1.ecloud.com.keytab. Entry for principal autodfs/ctdfs2a1.ecloud.com with kvno 15, encryption type des-cbc-crc added to keytab WRFILE:/etc/security/keytabs/autodfs.ctdfs2a1.ecloud.com.keytab.
+Generate kerberos_keytab success!
+Current user is : [root]
+Backup folder of ctdfs success!
+Download install package success!
+Decompression install package success!
+Analyze java_home success, it is : [/opt/jdk1.8.0_66]!
+Changed JAVA_HOME of ${ctdfs_path}/bin/config.sh success!
+hbase_sub_principal = [hbase-ctdfs2]
+HBase initialization success!
+namespace = [autodfs]
+shell_script_path = [/var/lib/ambari-agent/cache/stacks/HDP/2.5/services/CTDFS/package/scripts]
+
+Namespace of [autodfs] is exist.
+Last login: Fri Mar 15 22:35:48 CST 2019
+Execute auto-deploy.sh script done!
+ctdfs_conf_file is : [ctdfs-ambari-site.xml]
+ctdfs_conf_file is : [ctdfs-rest-site.xml]
+ctdfs_conf_file is : [dfs-default.xml]
+ctdfs_conf_file is : [dfs-site.xml]

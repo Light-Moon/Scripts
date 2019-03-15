@@ -1,7 +1,7 @@
 <configuration>
 	<property>
 		<name>dfs.zookeeper.quorum</name>
-		<value>h3a1.ecloud.com:2181,h3m1.ecloud.com:2181,h3m2.ecloud.com:2181</value>
+		<value>ctdfs2a1.ecloud.com:2181,ctdfs2m1.ecloud.com:2181,ctdfs2m2.ecloud.com:2181</value>
 	</property>
 	<property>
 		<name>dfs.zookeeper.znode.root</name>
@@ -60,7 +60,7 @@
      	</property>
         <property>
                 <name>dfs.installpack.path</name>
-                <value>/apps/ctdfs.tar.gz</value>
+                <value>/apps/ctdfs/deploy/ctdfs.tar.gz</value>
         </property>
 <!--      	
 <property>

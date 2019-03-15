@@ -7,7 +7,8 @@ ctdfs_keytab_path=$4
 
 function writeFile(){
 	`:>${merge_cmds_file}`
-	for keytabName in `ls ${merge_keytabs_path} | grep *.keytab`
+	#for keytabName in `ls ${merge_keytabs_path} | grep .keytab`
+	for keytabName in `find ${merge_keytabs_path} -name '*.keytab'`
 	do
 		line="rkt "${keytabName}
 		echo ${line} >> ${merge_cmds_file}
@@ -29,3 +30,4 @@ q
 EOF
 `mv ${merge_keytabs_path}/${merge_keytab_name} ${ctdfs_keytab_path}`
 `rm ${merge_keytabs_path}/*.keytab`
+

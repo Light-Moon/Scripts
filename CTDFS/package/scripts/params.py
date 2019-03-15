@@ -32,9 +32,6 @@ ctdfs_master_conf_filenames = ['dfs-site.xml','dfs-default.xml']
 ctdfs_ftp_conf_filenames = ['ctdfs-ambari-site.xml']
 ctdfs_rest_conf_filenames = ['ctdfs-rest-site.xml']
 
-domain_name = commands.getoutput("hostname -f")
-keytab_path = '/etc/security/keytabs'
-keytab_name = superuser + domain_name + '.keytab'
 ctdfs_keytab_path = user_root_path + '/ctdfs/keytab'
 merge_keytabs_path = ctdfs_keytab_path + '/merge'
 merge_cmds_file = ctdfs_keytab_path + '/merge_cmds.txt'
@@ -42,7 +39,3 @@ merge_keytab_name = superuser + '.merge.service.keytab'
 merge_keytab = ctdfs_keytab_path + '/' + merge_keytab_name
 ctdfs_default_keytab = ctdfs_keytab_path + '/ctdfs.example.keytab'
 
-#def getSuperuser():
-    #config = Script.get_config()
-    #superuser = config['configurations']['dfs-site']['dfs.superuser']
-    #return superuser
