@@ -14,18 +14,12 @@ class Master(Script):
         import params
         env.set_params(params)
         import kerberos
-        print 'kerberos status is : ', kerberos.getKerberosStatus()
-        print 'merge_keytabs_host is :', kerberos.getMergeKeytabsHost()
-        print 'kerberos_principal is :', kerberos.getKerberosPrincipal()
-        print 'kerberos_password is :', kerberos.getKerberosPassword()
-
         print '********** Install CTDFS_MASTER Operation Begin **********';
-        print "Current superuser is [" + params.superuser + "]; Current supergroup is [" + params.supergroup + "]; Current install_package_path is [" + params.install_package_path + "]"
-        status,output = commands.getstatusoutput("sh " + params.scripts_path + "/auto-deploy.sh -u " + params.superuser + " -g " + params.supergroup + " -p " + params.install_package_path + " -h " + kerberos.getMergeKeytabsHost() + " -i " + kerberos.getKerberosPrincipal() + " -k " + kerberos.getKerberosPassword() + " >> " + params.scripts_path + "/deploy.log 2>&1 ")
+        print "Current superuser is [" + params.superuser + "]; Current supergroup is [" + params.supergroup + "]; Current install_package_path is [" + params.install_package_path + "]; kerberos status is [" + kerberos.getKerberosStatus() + "]; merge_keytabs_host is [" + kerberos.getMergeKeytabsHost() + "]; kerberos_principal is [" + kerberos.getKerberosPrincipal() + "]; kerberos_password is [" + kerberos.getKerberosPassword() + "]."
+        status,output = commands.getstatusoutput("sh " + params.scripts_path + "/auto-deploy.sh -u " + params.superuser + " -g " + params.supergroup + " -p " + params.install_package_path + " -f " + kerberos.getKerberosStatus() + " -h " + kerberos.getMergeKeytabsHost() + " -i " + kerberos.getKerberosPrincipal() + " -k " + kerberos.getKerberosPassword() + " >> " + params.scripts_path + "/deploy.log 2>&1 ")
         print 'Execute auto-deploy.sh status code: ', status
         print 'Execute auto-deploy.sh output: ', output
         if status > 0:
-            #exit();
             raise Exception("***********Execute auto-deploy.sh error!!!********", status)
         if not os.path.isdir(params.ctdfs_conf_dir):
             Directory([params.ctdfs_conf_dir],mode=0755,owner=params.superuser,group=params.supergroup,create_parents=True) 
@@ -51,7 +45,6 @@ class Master(Script):
                 Logger.info("merge_keytab_status = " + str(merge_keytab_status))
                 Logger.info("merge_keytab_output = " + merge_keytab_output)
                 if merge_keytab_status > 0:
-                    #exit();
                     raise Exception("***********Execute merge keytab error!!!***********")
                 chown_status,chown_output = commands.getstatusoutput("sudo chown " + params.superuser + ":" + params.supergroup + " " + params.merge_keytab)
                 Logger.info("chown_status = " + str(chown_status))
@@ -63,7 +56,6 @@ class Master(Script):
                 Logger.info("init_status = " + str(init_status))
                 Logger.info("init_output = " + init_output)
                 if init_status > 0:
-                    #exit();
                     raise Exception("***********Execute init merge keytab error!!!***********")
                 Logger.info("********** Initialization CTDFS Operation By Merge Keytab End **********")
             else:
@@ -74,7 +66,6 @@ class Master(Script):
             Logger.info("init_status = " + str(init_status))
             Logger.info("init_output = " + init_output)
             if init_status > 0:
-                #exit();
                 raise Exception("***********Execute init example keytab error!!!***********")
             Logger.info("********** Initialization CTDFS Operation By Example Keytab End **********")
         print '********** Install CTDFS_MASTER Operation End **********';
@@ -97,11 +88,9 @@ class Master(Script):
             print 'prefix_filename = ', prefix_filename
             dict = params.config['configurations'][prefix_filename]
             write_xml(dict, file_path)
-        status,output = commands.getstatusoutput("sh " + params.scripts_path + "/create-softlinks.sh " + params.target_conf_dir)			
+        status,output = commands.getstatusoutput("sh " + params.scripts_path + "/create-softlinks.sh " + params.target_conf_dir)
         print 'create-softlinks status code:', status
         print 'create-softlinks output:', output
-        # Logger.info(config['configurations']['dfs-site']['dfs.supergroup'])
-        # Logger.info(config['configurations']['dfs-site'])
         print "********** Start CTDFS_MASTER Operation End **********"
     def status(self, env):
         #import params
@@ -117,5 +106,55 @@ class Master(Script):
         print "********** configure CTDFS_MASTER Operation Begin **********"
         print "Do Nothing"
         print "********** configure CTDFS_MASTER Operation End **********"
+    def kerberizectdfs(self, env):
+        import params
+        env.set_params(params)
+        import kerberos
+        #TODO:可将部分变量统一定义在params.py中
+        domain_name=commands.getoutput("hostname -f")
+        component_folder_name='ctdfs'
+        keytab_path='/etc/security/keytabs'
+        keytab_name=params.superuser + '.' + domain_name + '.keytab'
+       
+        #每台机器生成keytab并进行kinit认证
+        if kerberos.getKerberosStatus() == 'true':
+            kerberos_status,kerberos_output = commands.getstatusoutput("sh " + params.scripts_path + "/kerberos.sh " + params.superuser + " " + params.supergroup + " " + kerberos.getKerberosPrincipal() + " " + kerberos.getKerberosPassword() + " " + keytab_path + " >> " + params.scripts_path + "/kerberos.log 2>&1 ")
+            Logger.info("kerberos_status = " + str(kerberos_status))
+            Logger.info("kerberos_output = " + kerberos_output)
+            if kerberos_status > 0:
+                raise Exception("***********Execute kerberos.sh error!!!***********")
+            #传输keytab到一台机器
+            if kerberos.getMergeKeytabsHost() == domain_name:
+                cpkeytab_status,cpkeytab_output = commands.getstatusoutput("cp " + keytab_path + "/" + keytab_name + " " + params.user_root_path + "/" + component_folder_name + "/keytab/merge")
+                Logger.info("cpkeytab_status = " + str(cpkeytab_status))
+                Logger.info("cpkeytab_output = " + cpkeytab_output)
+                #`cp ${keytab_path}/${keytab_name} ${user_root_path}/${component_folder_name}/keytab/merge`
+            else:
+                scpkeytab_status,scpkeytab_output = commands.getstatusoutput("scp " + keytab_path + "/" + keytab_name + " " + params.superuser + "@" + kerberos.getMergeKeytabsHost() + ":" + params.user_root_path + "/" + component_folder_name + "/keytab/merge")
+                Logger.info("scpkeytab_status = " + str(scpkeytab_status))
+                Logger.info("scpkeytab_output = " + scpkeytab_output)
+                #`scp ${keytab_path}/${keytab_name} ${superuser}@${merge_keytabs_host}:${user_root_path}/${component_folder_name}/keytab/merge`
+            
+            #合并keytab 
+            if kerberos.getMergeKeytabsHost() == domain_name:
+                merge_keytab_status,merge_keytab_output = commands.getstatusoutput("sh " + params.scripts_path + "/merge_keytab.sh " + params.merge_cmds_file + " " + params.merge_keytabs_path + " " + params.merge_keytab_name + " " + params.ctdfs_keytab_path)
+                Logger.info("merge_keytab_status = " + str(merge_keytab_status))
+                Logger.info("merge_keytab_output = " + merge_keytab_output)
+                if merge_keytab_status > 0:
+                    raise Exception("***********Execute merge keytab error!!!***********")
+                chown_status,chown_output = commands.getstatusoutput("sudo chown " + params.superuser + ":" + params.supergroup + " " + params.merge_keytab)
+                Logger.info("chown_status = " + str(chown_status))
+                Logger.info("chown_output = " + chown_output)
+                chmod_status,chmod_output = commands.getstatusoutput("sudo chmod " + " 644 " + params.merge_keytab)
+                Logger.info("chmod_status = " + str(chmod_status))
+                Logger.info("chmod_output = " + chmod_output)
+                init_status,init_output = commands.getstatusoutput("sudo su - autodfs" + ' -c "' + params.ctdfs_cmd_dir + " -init " + params.merge_keytab + '"')
+                Logger.info("init_status = " + str(init_status))
+                Logger.info("init_output = " + init_output)
+                if init_status > 0:
+                    raise Exception("***********Execute init merge keytab error!!!***********")
+                Logger.info("********** Initialization CTDFS Operation By Merge Keytab End **********")
+        else:
+            Logger.info("Cluster does not open Kerberos authentication function, so do nothing for this command!")
 if __name__ == "__main__":
     Master().execute()

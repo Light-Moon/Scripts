@@ -10,26 +10,12 @@
         <display-name>dfs.merge.keytab.host</display-name>
         <value/>
         <description>The selected host for merging keytabs and initializing CTDFS.If kerberos authentication status is false(dfs.kerberos.enabled=false),this item can be filled by 'NULL'.Otherwise,please fill in domain name.</description>
-		<depends-on>
-		  <property>
-			<type>ctdfs-kerberos-site</type>
-			<name>dfs.kerberos.enabled</name>
-			<value>true</value>
-		  </property>
-		</depends-on>
 	</property>
 	<property require-input="true">
         <name>kadmin.local.principal</name>
         <display-name>admin principal</display-name>
         <value/>
         <description>The principal is used to add the kerberos database administrator. e.g:root/admin</description>
-		<depends-on>
-		  <property>
-			<type>ctdfs-kerberos-site</type>
-			<name>dfs.kerberos.enabled</name>
-			<value>true</value>
-		  </property>
-		</depends-on>
 	</property>
 	<property require-input="true">
         <name>kadmin.local.password</name>
@@ -37,14 +23,7 @@
         <value/>
         <property-type>PASSWORD</property-type>
         <description>The password is used to add the kerberos database administrator</description>
-        <depends-on>
-		  <property>
-			<type>ctdfs-kerberos-site</type>
-			<name>dfs.kerberos.enabled</name>
-			<value>true</value>
-		  </property>
-		</depends-on>
-		<value-attributes>
+	<value-attributes>
             <overridable>false</overridable>
             <type>password</type>
         </value-attributes>

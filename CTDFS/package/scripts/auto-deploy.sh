@@ -3,7 +3,7 @@
 
 #If there is no args to specified, it will show usage.
 if [ $# = 0 ]; then
-	echo "Usage: $0 [-u <username>] [-g <groupname>] [-p <install_package_path>]"
+	echo "Usage: $0 [-u <username>] [-g <groupname>] [-p <install_package_path>] [-f <kerberos_status>] [-h <merge_keytabs_host>] [-i <kerberos_principal>] [-k <kerberos_password>]"
 	echo "Try '$0 --help' for more information."
 	exit 0
 elif [[ $# = 1 ]] && [[ $1 = '--help' ]]; then
@@ -23,7 +23,7 @@ fi
 
 #TODO:格式正确性进一步判断
 #Get arguments.
-while getopts ":u:g:p:h:i:k:" opt
+while getopts ":u:g:p:f:h:i:k:" opt
 do
 	case ${opt} in
 	u)
@@ -39,6 +39,10 @@ do
 		compressed_package_name=${install_package_path##*/}
 		echo "install_package_path = [${install_package_path}]"
 		;;
+        f)
+                kerberos_status=$OPTARG
+                echo "kerberos_status = [${kerberos_status}]"
+                ;;
 	h)
 		merge_keytabs_host=$OPTARG
 		echo "merge_keytabs_host = [${merge_keytabs_host}]"
@@ -66,9 +70,10 @@ compressed_package_name=${install_package_path##*/}
 shell_script_path="$( cd "$(dirname "$0")" ; pwd -P )"
 log_file=${shell_script_path}"/deploy.log"
 echo "shell_script_path = [${shell_script_path}]"
+
 ########################################
 #Step1: Configure supergroup and superuser for CTDFS in host
-${shell_script_path}/user_config.sh -u ${superuser} -g ${supergroup}
+sh ${shell_script_path}/user_config.sh -u ${superuser} -g ${supergroup}
 
 ########################################
 #Step2: Get user_root_path infos and make sure the path exist.
@@ -76,51 +81,23 @@ superuser_infos=`cat /etc/passwd|grep ^${superuser}:`
 substr=${superuser_infos##*::}
 user_root_path=${substr%%:*}
 echo "user_root_path = [${user_root_path}]"
-#if [ ! -d "${user_root_path}" ]; then
-#	mkdir ${user_root_path}
-#	sudo chown ${superuser}:${superuser}  ${user_root_path}
-#fi
 
 ########################################
 #Step3: Configure kerberos for dfs user
-#TODO: 后期可以将kerberos认证这一部分代码单独封装起来，3个参数即可。superuser  principal  password
-domain_name=`hostname -f`
+#TODO: 可以将kerberos认证这一部分代码单独封装起来，4个参数即可。superuser supergroup principal  password
 keytab_path='/etc/security/keytabs'
+domain_name=`hostname -f`
 keytab_name=${superuser}'.'${domain_name}'.keytab'
-kerberos_status="true"
-echo "keytab_path = [${keytab_path}]"
-echo "keytab_name = [${keytab_name}]"
-echo "domain_name = [${domain_name}]"
-echo "kerberos_status = [${kerberos_status}]"
 
 if [ "${kerberos_status}" == "true" ]; then
-	echo "********** Kerberos Authentication Operation Start **********"
-	principal_log=`/usr/bin/kadmin -p ${kerberos_principal} -w ${kerberos_password} -q "ank -randkey ${superuser}/${domain_name}"`
+	sh ${shell_script_path}/kerberos.sh ${superuser} ${supergroup} ${kerberos_principal} ${kerberos_password} ${keytab_path}
 	if [ $? -eq 0 ]; then
-        	echo ${principal_log}
-                echo "Generate kerberos_principal success!"
+		echo "Kerberos authentication operation of single host is success!"
 	else
-      		echo ${principal_log}
-		echo "Generate kerberos_principal fail!"
-                exit 1
-        fi
-	keytab_log=`/usr/bin/kadmin -p ${kerberos_principal} -w ${kerberos_password} -q "xst -k ${keytab_path}/${keytab_name} ${superuser}/${domain_name}"`
-	if [ $? -eq 0 ]; then
-        	echo ${keytab_log} 
-	        echo "Generate kerberos_keytab success!"
-        else
-		echo ${keytab_log}
-                echo "Generate kerberos_keytab fail!"
-		exit 1
-        fi
-	#echo "0 0 * * * /usr/bin/kinit -k -t ${keytab_path}/${keytab_name} ${superuser}/${domain_name}" >> /var/spool/cron/${superuser}
-	#`crontab /var/spool/cron/${superuser}`
-	#`chown ${superuser}:${supergroup} /var/spool/cron/${superuser}`&&`chmod 644 /var/spool/cron/${superuser}`
-	`sudo chown ${superuser}:${supergroup} ${keytab_path}/${keytab_name}`
-        `sudo chmod 644 ${keytab_path}/${keytab_name}`
-	echo "Current user is : [`whoami`]"
-	`sudo su - ${superuser} -c "/usr/bin/kinit -k -t ${keytab_path}/${keytab_name} ${superuser}/${domain_name}"`
+		echo "Kerberos authentication operation of single host is fail!"
+	fi
 fi
+
 
 ########################################
 #Step4: Download installer package from hadoop cluster and to decompression.
@@ -129,6 +106,8 @@ if [ -d "${user_root_path}/${component_folder_name}" ]; then
 	`mv ${user_root_path}/${component_folder_name} ${user_root_path}/${component_folder_name}$(date +%Y%m%d%H%M%S)`
 	if [ $? -eq 0 ]; then
 		echo "Backup folder of ${component_folder_name} success!"
+	else
+		echo "Backup folder of ${component_folder_name} fail!"
 	fi
 fi
 `sudo su - ${superuser} -c "mkdir ${user_root_path}/${component_folder_name}"`
@@ -154,10 +133,12 @@ else
         # exit 1
 fi
 
-if [ "${merge_keytabs_host}" == "${domain_name}" ]; then
-	`cp ${keytab_path}/${keytab_name} ${user_root_path}/${component_folder_name}/keytab/merge`
-else
-	`scp ${keytab_path}/${keytab_name} ${superuser}@${merge_keytabs_host}:${user_root_path}/${component_folder_name}/keytab/merge`
+if [ "${kerberos_status}" == "true" ]; then
+	if [ "${merge_keytabs_host}" == "${domain_name}" ]; then
+		`cp ${keytab_path}/${keytab_name} ${user_root_path}/${component_folder_name}/keytab/merge`
+	else
+		`scp ${keytab_path}/${keytab_name} ${superuser}@${merge_keytabs_host}:${user_root_path}/${component_folder_name}/keytab/merge`
+	fi
 fi
 
 ########################################
@@ -169,6 +150,7 @@ then
 	echo "Analyze java_home success, it is : [${java_home}]!"
 else
 	echo "Analyze java_home fail!"
+        exit 1
 fi
 `sed -i "s:JAVA_HOME=null:JAVA_HOME=\${java_home}:g" ${user_root_path}/${component_folder_name}/bin/config.sh`
 if [ $? -eq 0 ]
@@ -176,22 +158,25 @@ then
 	echo "Changed JAVA_HOME of \${ctdfs_path}/bin/config.sh success!"
 else
 	echo "Changed JAVA_HOME of \${ctdfs_path}/bin/config.sh fail!"
+	exit 1
 fi
 
 ########################################
 #Step6: Create dfs namespace in hbase and empowerment
 
 # 1)kinit for hbase
-hbase_keytab_name="hbase.headless.keytab"
-hbase_sub_principal=`klist -k ${keytab_path}/${hbase_keytab_name} | sed -n 4p | awk -F '[ @]+' '{print $3}'`
-echo "hbase_sub_principal = [${hbase_sub_principal}]"
-`sudo su - hbase -c "/usr/bin/kinit -k -t ${keytab_path}/${hbase_keytab_name} ${hbase_sub_principal}"`
-if [ $? -eq 0 ]
-then
-	echo "HBase initialization success!"
-else
-	echo "HBase initialization fail!"
-	exit 1
+if [ "${kerberos_status}" == "true" ]; then
+	hbase_keytab_name="hbase.headless.keytab"
+	hbase_sub_principal=`klist -k ${keytab_path}/${hbase_keytab_name} | sed -n 4p | awk -F '[ @]+' '{print $3}'`
+	echo "hbase_sub_principal = [${hbase_sub_principal}]"
+	`sudo su - hbase -c "/usr/bin/kinit -k -t ${keytab_path}/${hbase_keytab_name} ${hbase_sub_principal}"`
+	if [ $? -eq 0 ]
+	then
+		echo "HBase initialization success!"
+	else
+		echo "HBase initialization fail!"
+		exit 1
+	fi
 fi
 # 2)create namespace and empowerment
 namespace=${superuser}
@@ -202,13 +187,4 @@ sh ${shell_script_path}/hbase_namespace.sh ${namespace}
 exit
 EOF
 
-########################################
-#Step6: Initialize CTDFS Component 
-#`su - ${superuser} -c "${user_root_path}/${component_folder_name}/bin/dfsadmin -init ${keytab_path}/${keytab_name}"`
-#if [ $? -eq 0 ]
-#then
-#	echo "Component initialization success!"
-#else
-#	echo "Component initialization fail!"
-#fi
 echo "Execute auto-deploy.sh script done!"

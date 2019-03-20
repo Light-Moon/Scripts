@@ -1,4 +1,5 @@
 #!/bin/bash
+echo "Usage: $0 [namespace]"
 namespace=$1
 check_result=`echo "describe_namespace '${namespace}'" | hbase shell -n |grep "Unknown namespace"`
 echo ${check_result}
