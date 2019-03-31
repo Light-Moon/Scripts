@@ -71,6 +71,11 @@ class Rest(Script):
         status,output = commands.getstatusoutput("sudo -u " + params.superuser + " nohup sh " + params.start_rest_dir + " > " + params.start_ftp_log_dir + " \&")
         print 'Execute start rest status code: ', status
         print 'Execute start rest output: ', output
+        scripts_path = sys.path[0]
+        target_rest_pid = scripts_path + '/../rest.pid'
+        ln_pid_status,ln_pid_output = commands.getstatusoutput("ln -s " + params.rest_pid_dir + " " + target_rest_pid)
+        Logger.info("ln_pid_status = " + str(ln_pid_status))
+        Logger.info("ln_pid_output = " + ln_pid_output)
         #global REST_PID_DIR
         #REST_PID_DIR = params.rest_pid_dir
         #pid = format(REST_PID_DIR)
@@ -84,12 +89,16 @@ class Rest(Script):
         #global REST_PID_DIR
         #pid = format(REST_PID_DIR)
         user_infos=commands.getoutput("cat /etc/passwd|grep ^autodfs:")
-        config = Script.get_config()
-        superuser = config['configurations']['dfs-site']['dfs.superuser']
+        #config = Script.get_config()
+        #superuser = config['configurations']['dfs-site']['dfs.superuser']
         #user_infos=commands.getoutput("cat /etc/passwd|grep ^" + superuser + ":")      
+        #user_infos=commands.getoutput("cat /etc/passwd|grep ^" + params.superuser + ":")
         user_root_path=user_infos.split(':')[5]
-        pid = format(user_root_path + "/ctdfs/pid/rest.pid")
-        check_process_status(pid)
+        #pid = format(user_root_path + "/ctdfs/pid/rest.pid")
+         
+        scripts_path = sys.path[0]
+        target_rest_pid = scripts_path + '/../rest.pid'
+        check_process_status(target_rest_pid)
         print "********** Status CTDFS_REST Operation End **********"
     def configure(self, env):
         print "********** configure CTDFS_REST Operation Begin **********"

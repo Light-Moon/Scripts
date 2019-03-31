@@ -11,7 +11,7 @@ from xml_utils import write_xml
 
 class Ftp(Script):
     FTP_PID_DIR=''
-    superuser='dfs'
+    superuser=''
     def install(self, env):
         import params
         env.set_params(params)
@@ -39,6 +39,7 @@ class Ftp(Script):
         import params
         env.set_params(params)
         print "********** Stop CTDFS_FTP Operation Begin **********"         
+        #这里应该用读pid文件中的进程号进行kill
         status,output = commands.getstatusoutput("sudo -u " + params.superuser + " ps -ef|grep DFSFtpServer |grep -v grep | awk '{print $2}' | xargs kill ")
         print 'kill ftp status code: ', status
         print 'kill ftp output: ', output
@@ -68,6 +69,11 @@ class Ftp(Script):
         status,output = commands.getstatusoutput("sudo -u " + params.superuser + " nohup sh " + params.start_ftp_dir + " > " + params.start_ftp_log_dir + " \&")
         print 'Execute start ftp status code: ', status
         print 'Execute start ftp output: ', output
+        scripts_path = sys.path[0]
+        target_ftp_pid = scripts_path + '/../ftp.pid'
+        ln_pid_status,ln_pid_output = commands.getstatusoutput("ln -s " + params.ftp_pid_dir + " " + target_ftp_pid)
+        Logger.info("ln_pid_status = " + str(ln_pid_status))
+        Logger.info("ln_pid_output = " + ln_pid_output)
         #global REST_PID_DIR
         #FTP_PID_DIR = params.ftp_pid_dir
         #pid = format(FTP_PID_DIR)
@@ -84,8 +90,13 @@ class Ftp(Script):
         #pid = format(FTP_PID_DIR)
         user_infos=commands.getoutput("cat /etc/passwd|grep ^autodfs:")
         #user_infos=commands.getoutput("cat /etc/passwd|grep ^" + Ftp.superuser + ":")
+        #user_infos=commands.getoutput("cat /etc/passwd|grep ^" + params.superuser + ":")
         user_root_path=user_infos.split(':')[5]
-        pid = format(user_root_path + "/ctdfs/pid/ftp.pid")
+        #pid = format(user_root_path + "/ctdfs/pid/ftp.pid")
+         
+        scripts_path = sys.path[0]
+        target_ftp_pid = scripts_path + '/../ftp.pid'
+        pid = format(target_ftp_pid)
         check_process_status(pid)
         print "********** Status CTDFS_FTP Operation End **********"
     def configure(self, env):
