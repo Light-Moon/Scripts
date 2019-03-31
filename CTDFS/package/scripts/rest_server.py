@@ -42,12 +42,9 @@ class Rest(Script):
         import params
         env.set_params(params)
         print "********** Stop CTDFS_REST Operation Begin **********"         
-        status,output = commands.getstatusoutput("sudo -u " + params.superuser + " ps -ef|grep com.ctg.ctdfs.rest.server.Server |grep -v grep | awk '{print $2}' | xargs kill ")
-        print 'kill rest status code: ', status
-        print 'kill rest output: ', output
-        status,output = commands.getstatusoutput("rm  " + params.rest_pid_dir)
-        print 'remove rest.pid status code: ', status
-        print 'remove rest.pid output: ', output
+        kill_rest_status,kill_rest_output = commands.getstatusoutput("cat " + params.rest_pid_dir + " | xargs kill ")
+        Logger.info("kill_rest_status = " + str(kill_rest_status))
+        Logger.info("kill_rest_output = " + kill_rest_output)
         print "********** Stop CTDFS_REST Operation End **********"
     def start(self, env):
         import params
@@ -72,7 +69,7 @@ class Rest(Script):
         print 'Execute start rest status code: ', status
         print 'Execute start rest output: ', output
         scripts_path = sys.path[0]
-        target_rest_pid = scripts_path + '/../rest.pid'
+        target_rest_pid = scripts_path + '/../../rest.pid'
         ln_pid_status,ln_pid_output = commands.getstatusoutput("ln -s " + params.rest_pid_dir + " " + target_rest_pid)
         Logger.info("ln_pid_status = " + str(ln_pid_status))
         Logger.info("ln_pid_output = " + ln_pid_output)
@@ -97,7 +94,7 @@ class Rest(Script):
         #pid = format(user_root_path + "/ctdfs/pid/rest.pid")
          
         scripts_path = sys.path[0]
-        target_rest_pid = scripts_path + '/../rest.pid'
+        target_rest_pid = scripts_path + '/../../rest.pid'
         check_process_status(target_rest_pid)
         print "********** Status CTDFS_REST Operation End **********"
     def configure(self, env):

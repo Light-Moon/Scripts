@@ -39,13 +39,9 @@ class Ftp(Script):
         import params
         env.set_params(params)
         print "********** Stop CTDFS_FTP Operation Begin **********"         
-        #这里应该用读pid文件中的进程号进行kill
-        status,output = commands.getstatusoutput("sudo -u " + params.superuser + " ps -ef|grep DFSFtpServer |grep -v grep | awk '{print $2}' | xargs kill ")
-        print 'kill ftp status code: ', status
-        print 'kill ftp output: ', output
-        status,output = commands.getstatusoutput("rm  " + params.ftp_pid_dir)
-        print 'remove ftp.pid status code: ', status
-        print 'remove ftp.pid output: ', output
+        kill_ftp_status,kill_ftp_output = commands.getstatusoutput("cat " + params.ftp_pid_dir + " | xargs kill ")
+        Logger.info("kill_ftp_status = " + str(kill_ftp_status))
+        Logger.info("kill_ftp_output = " + kill_ftp_output)
         print "********** Stop CTDFS_FTP Operation End **********"
     def start(self, env):
         import params
@@ -70,7 +66,7 @@ class Ftp(Script):
         print 'Execute start ftp status code: ', status
         print 'Execute start ftp output: ', output
         scripts_path = sys.path[0]
-        target_ftp_pid = scripts_path + '/../ftp.pid'
+        target_ftp_pid = scripts_path + '/../../ftp.pid'
         ln_pid_status,ln_pid_output = commands.getstatusoutput("ln -s " + params.ftp_pid_dir + " " + target_ftp_pid)
         Logger.info("ln_pid_status = " + str(ln_pid_status))
         Logger.info("ln_pid_output = " + ln_pid_output)
@@ -95,7 +91,7 @@ class Ftp(Script):
         #pid = format(user_root_path + "/ctdfs/pid/ftp.pid")
          
         scripts_path = sys.path[0]
-        target_ftp_pid = scripts_path + '/../ftp.pid'
+        target_ftp_pid = scripts_path + '/../../ftp.pid'
         pid = format(target_ftp_pid)
         check_process_status(pid)
         print "********** Status CTDFS_FTP Operation End **********"
