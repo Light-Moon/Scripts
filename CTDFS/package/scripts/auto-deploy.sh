@@ -68,6 +68,7 @@ component_folder_name=ctdfs
 compressed_package_name=${install_package_path##*/}
 #shell_script_path=`dirname "$0"; pwd`
 shell_script_path="$( cd "$(dirname "$0")" ; pwd -P )"
+sudo chmod 755 ${shell_script_path}/*.sh
 log_file=${shell_script_path}"/deploy.log"
 echo "shell_script_path = [${shell_script_path}]"
 
@@ -84,7 +85,7 @@ echo "user_root_path = [${user_root_path}]"
 
 ########################################
 #Step3: Configure kerberos for dfs user
-#TODO: 可以将kerberos认证这一部分代码单独封装起来，4个参数即可。superuser supergroup principal  password
+#已将kerberos认证这一部分代码单独封装起来，5个参数: superuser supergroup principal password keytab_path
 keytab_path='/etc/security/keytabs'
 domain_name=`hostname -f`
 keytab_name=${superuser}'.'${domain_name}'.keytab'

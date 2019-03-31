@@ -85,7 +85,7 @@ class Ftp(Script):
         user_infos=commands.getoutput("cat /etc/passwd|grep ^autodfs:")
         #user_infos=commands.getoutput("cat /etc/passwd|grep ^" + Ftp.superuser + ":")
         user_root_path=user_infos.split(':')[5]
-        pid = format(user_root_path + "/ctdfs/pid/rest.pid")
+        pid = format(user_root_path + "/ctdfs/pid/ftp.pid")
         check_process_status(pid)
         print "********** Status CTDFS_FTP Operation End **********"
     def configure(self, env):
