@@ -1,0 +1,14 @@
+<configuration>
+	<property>
+		<name>ctdfs.ambari.server.host</name>
+		<value>10.142.90.152</value>
+	</property>
+	<property>
+		<name>ctdfs.ambari.server.port</name>
+		<value>8080</value>
+	</property>
+	<property>
+		<name>ctdfs.ambari.cluster.name</name>
+		<value>ctdfs</value>
+	</property>
+</configuration>

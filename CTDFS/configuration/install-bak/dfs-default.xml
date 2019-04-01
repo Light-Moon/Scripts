@@ -1,0 +1,44 @@
+<configuration>
+	<property>
+		<name>dfs.zookeeper.quorum</name>
+		<value>127.0.0.1:2081</value>
+	</property>
+	<property>
+		<name>dfs.zookeeper.znode.root</name>
+		<value>/dfs</value>
+	</property>
+	<property>
+		<name>dfs.scheme</name>
+		<value>dfs</value>
+	</property>
+	<property>
+		<name>dfs.keytab.relogin.delay</name>
+		<value>82800000</value>
+	</property>
+	<property>
+		<name>dfs.keytab.relogin.preiod</name>
+		<value>82800000</value>
+	</property>
+	<property>
+		<name>dfs.query.page.size</name>
+		<value>30000</value>
+	</property>
+	<property>
+		<name>fs.dfs.impl</name>
+		<value>org.apache.hadoop.fs.DFSFileSystem</value>
+	</property>
+
+	<!-- hadoop相关配置 -->
+	<property>
+		<name>fs.hdfs.impl.disable.cache</name>
+		<value>true</value>
+	</property>
+	<property>
+		<name>hbase.hconnection.threads.max</name>
+		<value>50</value>
+	</property>
+	<property>
+		<name>hbase.hconnection.threads.core</name>
+		<value>50</value>
+	</property>
+</configuration>
