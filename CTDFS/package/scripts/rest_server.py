@@ -29,14 +29,16 @@ class Rest(Script):
             print 'prefix_filename = ', prefix_filename
             dict = params.config['configurations'][prefix_filename]
             write_xml(dict, file_path)
-            rest_target_file_path = params.target_conf_dir + '/' + filename
-            if not os.path.isfile(rest_target_file_path):
+            if os.path.isdir(params.ambari_server_conf_dir):
+                rest_target_file_path = params.ambari_server_conf_dir + '/' + filename
+                if os.path.isfile(rest_target_file_path):
+                    rm_server_config_status,rm_server_config_output = commands.getstatusoutput("rm " + rest_target_file_path)
+                    Logger.info("rm_server_config_status = " + str(rm_server_config_status))
+                    Logger.info("rm_server_config_output = " + rm_server_config_output)  
                 ln_cmd = 'ln -s ' + file_path + ' ' + rest_target_file_path
                 status,output = commands.getstatusoutput(ln_cmd)
                 print 'Execute ln_cmd status code : ', status
                 print 'Execute ln_cmd output : ', output
-            else:
-                print rest_target_file_path + ' is exist!'
         print "********** Install CTDFS_REST Operation End **********" 
     def stop(self, env):
         import params
@@ -59,8 +61,12 @@ class Rest(Script):
             print 'prefix_filename = ', prefix_filename
             dict = params.config['configurations'][prefix_filename]
             write_xml(dict, file_path)
-            rest_target_file_path = params.target_conf_dir + '/' + filename
-            if not os.path.isfile(rest_target_file_path):
+            if os.path.isdir(params.ambari_server_conf_dir):
+                rest_target_file_path = params.ambari_server_conf_dir + '/' + filename
+                if os.path.isfile(rest_target_file_path):
+                    rm_server_config_status,rm_server_config_output = commands.getstatusoutput("rm " + rest_target_file_path)
+                    Logger.info("rm_server_config_status = " + str(rm_server_config_status))
+                    Logger.info("rm_server_config_output = " + rm_server_config_output)                   
                 ln_cmd = 'ln -s ' + file_path + ' ' + rest_target_file_path
                 status,output = commands.getstatusoutput(ln_cmd)
                 print 'Execute ln_cmd status code : ', status
@@ -70,9 +76,10 @@ class Rest(Script):
         print 'Execute start rest output: ', output
         scripts_path = sys.path[0]
         target_rest_pid = scripts_path + '/../../rest.pid'
-        ln_pid_status,ln_pid_output = commands.getstatusoutput("ln -s " + params.rest_pid_dir + " " + target_rest_pid)
-        Logger.info("ln_pid_status = " + str(ln_pid_status))
-        Logger.info("ln_pid_output = " + ln_pid_output)
+        if not os.path.isfile(target_rest_pid):
+            ln_pid_status,ln_pid_output = commands.getstatusoutput("ln -s " + params.rest_pid_dir + " " + target_rest_pid)
+            Logger.info("ln_pid_status = " + str(ln_pid_status))
+            Logger.info("ln_pid_output = " + ln_pid_output)
         #global REST_PID_DIR
         #REST_PID_DIR = params.rest_pid_dir
         #pid = format(REST_PID_DIR)

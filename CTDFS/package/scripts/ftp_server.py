@@ -28,8 +28,12 @@ class Ftp(Script):
             print 'prefix_filename = ', prefix_filename
             dict = params.config['configurations'][prefix_filename]
             write_xml(dict, file_path)
-            ftp_target_file_path = params.target_conf_dir + '/' + filename
-            if not os.path.isfile(ftp_target_file_path):
+            if os.path.isdir(params.ambari_server_conf_dir):            
+                ftp_target_file_path = params.ambari_server_conf_dir + '/' + filename
+                if os.path.isfile(ftp_target_file_path):
+                    rm_server_config_status,rm_server_config_output = commands.getstatusoutput("rm " + ftp_target_file_path)
+                    Logger.info("rm_server_config_status = " + str(rm_server_config_status))
+                    Logger.info("rm_server_config_output = " + rm_server_config_output)   
                 ln_cmd = 'ln -s ' + file_path + ' ' + ftp_target_file_path
                 status,output = commands.getstatusoutput(ln_cmd)
                 print 'Execute ln_cmd status code : ', status
@@ -56,20 +60,25 @@ class Ftp(Script):
             print 'prefix_filename = ', prefix_filename
             dict = params.config['configurations'][prefix_filename]
             write_xml(dict, file_path)
-            ftp_target_file_path = params.target_conf_dir + '/' + filename
-            if not os.path.isfile(ftp_target_file_path):
+            if os.path.isdir(params.ambari_server_conf_dir):
+                ftp_target_file_path = params.ambari_server_conf_dir + '/' + filename
+                if os.path.isfile(ftp_target_file_path):
+                    rm_server_config_status,rm_server_config_output = commands.getstatusoutput("rm " + ftp_target_file_path)
+                    Logger.info("rm_server_config_status = " + str(rm_server_config_status))
+                    Logger.info("rm_server_config_output = " + rm_server_config_output)
                 ln_cmd = 'ln -s ' + file_path + ' ' + ftp_target_file_path
                 status,output = commands.getstatusoutput(ln_cmd)
                 print 'Execute ln_cmd status code : ', status
-                print 'Execute ln_cmd output : ', output
+                print 'Execute ln_cmd output : ', output          
         status,output = commands.getstatusoutput("sudo -u " + params.superuser + " nohup sh " + params.start_ftp_dir + " > " + params.start_ftp_log_dir + " \&")
         print 'Execute start ftp status code: ', status
         print 'Execute start ftp output: ', output
         scripts_path = sys.path[0]
         target_ftp_pid = scripts_path + '/../../ftp.pid'
-        ln_pid_status,ln_pid_output = commands.getstatusoutput("ln -s " + params.ftp_pid_dir + " " + target_ftp_pid)
-        Logger.info("ln_pid_status = " + str(ln_pid_status))
-        Logger.info("ln_pid_output = " + ln_pid_output)
+        if not os.path.isfile(target_ftp_pid):
+            ln_pid_status,ln_pid_output = commands.getstatusoutput("ln -s " + params.ftp_pid_dir + " " + target_ftp_pid)
+            Logger.info("ln_pid_status = " + str(ln_pid_status))
+            Logger.info("ln_pid_output = " + ln_pid_output)
         #global REST_PID_DIR
         #FTP_PID_DIR = params.ftp_pid_dir
         #pid = format(FTP_PID_DIR)

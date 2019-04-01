@@ -32,11 +32,15 @@ class Master(Script):
             print 'prefix_filename = ', prefix_filename
             dict = params.config['configurations'][prefix_filename]
             write_xml(dict, file_path)
-        status,output = commands.getstatusoutput("sh " + params.scripts_path + "/create-softlinks.sh " + params.target_conf_dir + " >> " + params.scripts_path + "/deploy.log 2>&1 ")				
+        status,output = commands.getstatusoutput("sh " + params.scripts_path + "/dependent-softlinks.sh " + params.ctdfs_conf_dir + " >> " + params.scripts_path + "/deploy.log 2>&1 ")				
         print 'create-softlinks status code:', status
         print 'create-softlinks output:', output
-        #如果是合并keytab所在主机
-        if kerberos.getKerberosStatus() == 'true':
+        if os.path.isdir(params.ambari_server_conf_dir):
+            link_toAmbariServer_status,link_toAmbariServer_output = commands.getstatusoutput("sh " + params.scripts_path + "/ctdfs-softlinks.sh " + params.ctdfs_conf_dir + " " + params.ambari_server_conf_dir + " >> " + params.scripts_path + "/deploy.log 2>&1 ")
+            Logger.info("link_toAmbariServer_status = " + str(link_toAmbariServer_status))
+            Logger.info("link_toAmbariServer_output = " + link_toAmbariServer_output)
+        if params.cluster_security_authentication == 'kerberos' and str(params.cluster_security_authorization).lower() == 'true':
+        #if kerberos.getKerberosStatus() == 'true':
             domain_name = commands.getoutput("hostname -f")
             if domain_name == kerberos.getMergeKeytabsHost():
                 Logger.info("dfs.kerberos.enabled is true and this host is MergeKeytabsHost!")
@@ -77,7 +81,8 @@ class Master(Script):
         import params
         env.set_params(params)
         print "********** Start CTDFS_MASTER Operation Begin **********"
-        status,filenames = commands.getstatusoutput("find " + params.ctdfs_conf_dir + " -maxdepth 1 -name *.xml -o -name *.properties -type f")
+        #status,filenames = commands.getstatusoutput("find " + params.ctdfs_conf_dir + " -maxdepth 1 -name *.xml -o -name *.properties -type f")
+        status,filenames = commands.getstatusoutput("find " + params.ctdfs_conf_dir + " -maxdepth 1 -name *.xml -type f")
         print 'find ctdfs_conf_filenames status code: ', status
         print 'find ctdfs_conf_filenames output: ', filenames
         for item in filenames.split('\n'):
@@ -88,9 +93,13 @@ class Master(Script):
             print 'prefix_filename = ', prefix_filename
             dict = params.config['configurations'][prefix_filename]
             write_xml(dict, file_path)
-        status,output = commands.getstatusoutput("sh " + params.scripts_path + "/create-softlinks.sh " + params.target_conf_dir)
+        status,output = commands.getstatusoutput("sh " + params.scripts_path + "/dependent-softlinks.sh " + params.ctdfs_conf_dir + " >> " + params.scripts_path + "/deploy.log 2>&1 ")
         print 'create-softlinks status code:', status
         print 'create-softlinks output:', output
+        if os.path.isdir(params.ambari_server_conf_dir):
+            link_toAmbariServer_status,link_toAmbariServer_output = commands.getstatusoutput("sh " + params.scripts_path + "/ctdfs-softlinks.sh " + params.ctdfs_conf_dir + " " + params.ambari_server_conf_dir + " >> " + params.scripts_path + "/deploy.log 2>&1 ")
+            Logger.info("link_toAmbariServer_status = " + str(link_toAmbariServer_status))
+            Logger.info("link_toAmbariServer_output = " + link_toAmbariServer_output)
         print "********** Start CTDFS_MASTER Operation End **********"
     def status(self, env):
         #import params
@@ -117,7 +126,9 @@ class Master(Script):
         keytab_name=params.superuser + '.' + domain_name + '.keytab'
        
         #每台机器生成keytab并进行kinit认证
-        if kerberos.getKerberosStatus() == 'true':
+        if params.cluster_security_authentication == 'kerberos' and str(params.cluster_security_authorization).lower() == 'true':
+        #if kerberos.getKerberosStatus() == 'true':
+            Logger.info("********** Regenerate keytab and Kinit host authentication and Init ctdfs component **********")
             kerberos_status,kerberos_output = commands.getstatusoutput("sh " + params.scripts_path + "/kerberos.sh " + params.superuser + " " + params.supergroup + " " + kerberos.getKerberosPrincipal() + " " + kerberos.getKerberosPassword() + " " + keytab_path + " >> " + params.scripts_path + "/kerberos.log 2>&1 ")
             Logger.info("kerberos_status = " + str(kerberos_status))
             Logger.info("kerberos_output = " + kerberos_output)
