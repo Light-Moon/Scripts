@@ -1,11 +1,5 @@
 <configuration>
 	<property require-input="true">
-        <name>dfs.kerberos.enabled</name>
-        <display-name>dfs.kerberos.enabled</display-name>
-        <value/>
-        <description>Kerberos authentication status for CTDFS.Valid values are: true or false.</description>
-	</property>
-	<property require-input="true">
         <name>dfs.merge.keytab.host</name>
         <display-name>dfs.merge.keytab.host</display-name>
         <value/>

@@ -39,8 +39,7 @@ class Master(Script):
             link_toAmbariServer_status,link_toAmbariServer_output = commands.getstatusoutput("sh " + params.scripts_path + "/ctdfs-softlinks.sh " + params.ctdfs_conf_dir + " " + params.ambari_server_conf_dir + " >> " + params.scripts_path + "/deploy.log 2>&1 ")
             Logger.info("link_toAmbariServer_status = " + str(link_toAmbariServer_status))
             Logger.info("link_toAmbariServer_output = " + link_toAmbariServer_output)
-        if params.cluster_security_authentication == 'kerberos' and str(params.cluster_security_authorization).lower() == 'true':
-        #if kerberos.getKerberosStatus() == 'true':
+        if kerberos.getKerberosStatus() == 'true':
             domain_name = commands.getoutput("hostname -f")
             if domain_name == kerberos.getMergeKeytabsHost():
                 Logger.info("dfs.kerberos.enabled is true and this host is MergeKeytabsHost!")
@@ -126,8 +125,7 @@ class Master(Script):
         keytab_name=params.superuser + '.' + domain_name + '.keytab'
        
         #每台机器生成keytab并进行kinit认证
-        if params.cluster_security_authentication == 'kerberos' and str(params.cluster_security_authorization).lower() == 'true':
-        #if kerberos.getKerberosStatus() == 'true':
+        if kerberos.getKerberosStatus() == 'true':
             Logger.info("********** Regenerate keytab and Kinit host authentication and Init ctdfs component **********")
             kerberos_status,kerberos_output = commands.getstatusoutput("sh " + params.scripts_path + "/kerberos.sh " + params.superuser + " " + params.supergroup + " " + kerberos.getKerberosPrincipal() + " " + kerberos.getKerberosPassword() + " " + keytab_path + " >> " + params.scripts_path + "/kerberos.log 2>&1 ")
             Logger.info("kerberos_status = " + str(kerberos_status))

@@ -10,8 +10,13 @@ from resource_management.core.logger import Logger
 config = Script.get_config()
 
 def getKerberosStatus():
-    kerberos_status = config['configurations']['ctdfs-kerberos-site']['dfs.kerberos.enabled']
-    return str(kerberos_status).lower()
+    cluster_security_authentication = config['configurations']['core-site']['hadoop.security.authentication']
+    cluster_security_authorization = config['configurations']['core-site']['hadoop.security.authorization']
+    #if cluster_security_authentication == 'kerberos' and str(cluster_security_authorization).lower() == 'true':
+    if cluster_security_authentication == 'kerberos' and cluster_security_authorization == True:
+        return 'true'
+    else:
+        return 'false'
 
 def getMergeKeytabsHost():
     merge_keytabs_host = config['configurations']['ctdfs-kerberos-site']['dfs.merge.keytab.host']

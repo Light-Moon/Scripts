@@ -10,8 +10,6 @@ from resource_management.core.logger import Logger
 config = Script.get_config()
 superuser = config['configurations']['dfs-site']['dfs.superuser']
 supergroup = config['configurations']['dfs-site']['dfs.supergroup']
-cluster_security_authentication = config['configurations']['core-site']['hadoop.security.authentication']
-cluster_security_authorization = config['configurations']['core-site']['hadoop.security.authorization']
 install_package_path = config['configurations']['dfs-site']['dfs.installpack.path']
 scripts_path = sys.path[0]
 target_conf_dir = scripts_path + '/../../configuration'
@@ -31,7 +29,7 @@ start_rest_log_dir = user_root_path + '/ctdfs/logs/startRest.log'
 master_pid_dir = user_root_path + '/ctdfs/pid/master.pid'
 ftp_pid_dir = user_root_path + '/ctdfs/pid/ftp.pid'
 rest_pid_dir = user_root_path + '/ctdfs/pid/rest.pid'
-ctdfs_master_conf_filenames = ['dfs-site.xml','dfs-default.xml']
+ctdfs_master_conf_filenames = ['dfs-site.xml','dfs-default.xml','ctdfs-kerberos-site.xml']
 ctdfs_ftp_conf_filenames = ['ctdfs-ambari-site.xml']
 ctdfs_rest_conf_filenames = ['ctdfs-rest-site.xml']
 

@@ -1,6 +1,0 @@
-<configuration>
-	<property>
-		<name>ctdfs.rest.server.port</name>
-		<value>8999</value>
-	</property>
-</configuration>
