@@ -40,3 +40,5 @@ merge_keytab_name = superuser + '.merge.service.keytab'
 merge_keytab = ctdfs_keytab_path + '/' + merge_keytab_name
 ctdfs_default_keytab = ctdfs_keytab_path + '/ctdfs.example.keytab'
 
+component_folder_name='ctdfs'
+default_keytab_path='/etc/security/keytabs'

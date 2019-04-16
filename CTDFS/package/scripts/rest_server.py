@@ -47,6 +47,11 @@ class Rest(Script):
         kill_rest_status,kill_rest_output = commands.getstatusoutput("cat " + params.rest_pid_dir + " | xargs kill ")
         Logger.info("kill_rest_status = " + str(kill_rest_status))
         Logger.info("kill_rest_output = " + kill_rest_output)
+        scripts_path = sys.path[0]
+        target_rest_pid = scripts_path + "/../../rest.pid"
+        rm_rest_pid_status,rm_rest_pid_output = commands.getstatusoutput("rm " + target_rest_pid)
+        Logger.info("rm_rest_pid_status = " + str(rm_rest_pid_status))
+        Logger.info("rm_rest_pid_output = " + rm_rest_pid_output)
         print "********** Stop CTDFS_REST Operation End **********"
     def start(self, env):
         import params
@@ -92,12 +97,12 @@ class Rest(Script):
         print "********** Status CTDFS_REST Operation Begin **********"
         #global REST_PID_DIR
         #pid = format(REST_PID_DIR)
-        user_infos=commands.getoutput("cat /etc/passwd|grep ^autodfs:")
+        #user_infos=commands.getoutput("cat /etc/passwd|grep ^autodfs:")
         #config = Script.get_config()
         #superuser = config['configurations']['dfs-site']['dfs.superuser']
         #user_infos=commands.getoutput("cat /etc/passwd|grep ^" + superuser + ":")      
         #user_infos=commands.getoutput("cat /etc/passwd|grep ^" + params.superuser + ":")
-        user_root_path=user_infos.split(':')[5]
+        #user_root_path=user_infos.split(':')[5]
         #pid = format(user_root_path + "/ctdfs/pid/rest.pid")
          
         scripts_path = sys.path[0]

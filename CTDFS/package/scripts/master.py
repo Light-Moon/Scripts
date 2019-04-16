@@ -10,6 +10,7 @@ from resource_management.libraries.script.script import Script
 from xml_utils import write_xml
 
 class Master(Script):
+    MASTER_STATE = True
     def install(self, env):
         import params
         env.set_params(params)
@@ -74,7 +75,16 @@ class Master(Script):
         print '********** Install CTDFS_MASTER Operation End **********';
     def stop(self, env):
         print "********** Stop CTDFS_MASTER Operation Begin **********"
-        print "Do Nothing"
+        global MASTER_STATE
+        MASTER_STATE = False
+
+        scripts_path = sys.path[0]
+        master_pid = scripts_path + '/../../master.pid'
+        #if not os.path.isfile(master_pid):
+        fp = open(master_pid,'w')
+        fp.write('False')
+        fp.close()
+        Logger.info("MASTER_STATE = " + str(MASTER_STATE))
         print "********** Stop CTDFS_MASTER Operation End **********"
     def start(self, env):
         import params
@@ -99,6 +109,16 @@ class Master(Script):
             link_toAmbariServer_status,link_toAmbariServer_output = commands.getstatusoutput("sh " + params.scripts_path + "/ctdfs-softlinks.sh " + params.ctdfs_conf_dir + " " + params.ambari_server_conf_dir + " >> " + params.scripts_path + "/deploy.log 2>&1 ")
             Logger.info("link_toAmbariServer_status = " + str(link_toAmbariServer_status))
             Logger.info("link_toAmbariServer_output = " + link_toAmbariServer_output)
+        global MASTER_STATE
+        MASTER_STATE = True
+        Logger.info("MASTER_STATE = " + str(MASTER_STATE))
+
+        scripts_path = sys.path[0]
+        master_pid = scripts_path + '/../../master.pid'
+        #if not os.path.isfile(master_pid):
+        fp = open(master_pid,'w')
+        fp.write('True')
+        fp.close()
         print "********** Start CTDFS_MASTER Operation End **********"
     def status(self, env):
         #import params
@@ -107,7 +127,14 @@ class Master(Script):
         #pid =  format(params.master_pid_dir)
         #check_process_status(pid)
         status,pid = commands.getstatusoutput("ps -ef|grep NameNode |grep -v grep | awk '{print $2}'")
-        if pid:
+        #MASTER_STATE1 = open(target_master_pid).read()
+        #global MASTER_STATE
+        
+        scripts_path = sys.path[0]
+        master_pid = scripts_path + '/../../master.pid'
+        MASTER_STATE = open(master_pid).read()
+        if str(MASTER_STATE).lower() != 'true':
+            #if open(master_pid).read() != True:
             raise ComponentIsNotRunning()
         print "********** Status CTDFS_MASTER Operation End **********"
     def configure(self, env):
@@ -120,29 +147,25 @@ class Master(Script):
         import kerberos
         #TODO:可将部分变量统一定义在params.py中
         domain_name=commands.getoutput("hostname -f")
-        component_folder_name='ctdfs'
-        keytab_path='/etc/security/keytabs'
         keytab_name=params.superuser + '.' + domain_name + '.keytab'
        
         #每台机器生成keytab并进行kinit认证
         if kerberos.getKerberosStatus() == 'true':
             Logger.info("********** Regenerate keytab and Kinit host authentication and Init ctdfs component **********")
-            kerberos_status,kerberos_output = commands.getstatusoutput("sh " + params.scripts_path + "/kerberos.sh " + params.superuser + " " + params.supergroup + " " + kerberos.getKerberosPrincipal() + " " + kerberos.getKerberosPassword() + " " + keytab_path + " >> " + params.scripts_path + "/kerberos.log 2>&1 ")
+            kerberos_status,kerberos_output = commands.getstatusoutput("sh " + params.scripts_path + "/kerberos.sh " + params.superuser + " " + params.supergroup + " " + kerberos.getKerberosPrincipal() + " " + kerberos.getKerberosPassword() + " " + params.default_keytab_path + " >> " + params.scripts_path + "/kerberos.log 2>&1 ")
             Logger.info("kerberos_status = " + str(kerberos_status))
             Logger.info("kerberos_output = " + kerberos_output)
             if kerberos_status > 0:
                 raise Exception("***********Execute kerberos.sh error!!!***********")
             #传输keytab到一台机器
             if kerberos.getMergeKeytabsHost() == domain_name:
-                cpkeytab_status,cpkeytab_output = commands.getstatusoutput("cp " + keytab_path + "/" + keytab_name + " " + params.user_root_path + "/" + component_folder_name + "/keytab/merge")
+                cpkeytab_status,cpkeytab_output = commands.getstatusoutput("cp " + params.default_keytab_path + "/" + keytab_name + " " + params.user_root_path + "/" + params.component_folder_name + "/keytab/merge")
                 Logger.info("cpkeytab_status = " + str(cpkeytab_status))
                 Logger.info("cpkeytab_output = " + cpkeytab_output)
-                #`cp ${keytab_path}/${keytab_name} ${user_root_path}/${component_folder_name}/keytab/merge`
             else:
-                scpkeytab_status,scpkeytab_output = commands.getstatusoutput("scp " + keytab_path + "/" + keytab_name + " " + params.superuser + "@" + kerberos.getMergeKeytabsHost() + ":" + params.user_root_path + "/" + component_folder_name + "/keytab/merge")
+                scpkeytab_status,scpkeytab_output = commands.getstatusoutput("scp " + params.default_keytab_path + "/" + keytab_name + " " + params.superuser + "@" + kerberos.getMergeKeytabsHost() + ":" + params.user_root_path + "/" + params.component_folder_name + "/keytab/merge")
                 Logger.info("scpkeytab_status = " + str(scpkeytab_status))
                 Logger.info("scpkeytab_output = " + scpkeytab_output)
-                #`scp ${keytab_path}/${keytab_name} ${superuser}@${merge_keytabs_host}:${user_root_path}/${component_folder_name}/keytab/merge`
             
             #合并keytab 
             if kerberos.getMergeKeytabsHost() == domain_name:

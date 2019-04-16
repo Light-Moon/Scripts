@@ -46,6 +46,11 @@ class Ftp(Script):
         kill_ftp_status,kill_ftp_output = commands.getstatusoutput("cat " + params.ftp_pid_dir + " | xargs kill ")
         Logger.info("kill_ftp_status = " + str(kill_ftp_status))
         Logger.info("kill_ftp_output = " + kill_ftp_output)
+        scripts_path = sys.path[0]
+        target_ftp_pid = scripts_path + "/../../ftp.pid"
+        rm_ftp_pid_status,rm_ftp_pid_output = commands.getstatusoutput("rm " + target_ftp_pid)
+        Logger.info("rm_ftp_pid_status = " + str(rm_ftp_pid_status))
+        Logger.info("rm_ftp_pid_output = " + rm_ftp_pid_output) 
         print "********** Stop CTDFS_FTP Operation End **********"
     def start(self, env):
         import params
@@ -74,7 +79,7 @@ class Ftp(Script):
         print 'Execute start ftp status code: ', status
         print 'Execute start ftp output: ', output
         scripts_path = sys.path[0]
-        target_ftp_pid = scripts_path + '/../../ftp.pid'
+        target_ftp_pid = scripts_path + "/../../ftp.pid"
         if not os.path.isfile(target_ftp_pid):
             ln_pid_status,ln_pid_output = commands.getstatusoutput("ln -s " + params.ftp_pid_dir + " " + target_ftp_pid)
             Logger.info("ln_pid_status = " + str(ln_pid_status))
@@ -93,14 +98,13 @@ class Ftp(Script):
         print "********** Status CTDFS_FTP Operation Begin **********"
         #global FTP_PID_DIR 
         #pid = format(FTP_PID_DIR)
-        user_infos=commands.getoutput("cat /etc/passwd|grep ^autodfs:")
+        #user_infos=commands.getoutput("cat /etc/passwd|grep ^autodfs:")
         #user_infos=commands.getoutput("cat /etc/passwd|grep ^" + Ftp.superuser + ":")
         #user_infos=commands.getoutput("cat /etc/passwd|grep ^" + params.superuser + ":")
-        user_root_path=user_infos.split(':')[5]
+        #user_root_path=user_infos.split(':')[5]
         #pid = format(user_root_path + "/ctdfs/pid/ftp.pid")
-         
         scripts_path = sys.path[0]
-        target_ftp_pid = scripts_path + '/../../ftp.pid'
+        target_ftp_pid = scripts_path + "/../../ftp.pid"
         pid = format(target_ftp_pid)
         check_process_status(pid)
         print "********** Status CTDFS_FTP Operation End **********"
