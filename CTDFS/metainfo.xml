@@ -6,7 +6,7 @@
             <!-- Service-->
             <name>CTDFS_COMPONENT</name>
             <displayName>CTDFS</displayName>
-            <comment>A New Sample Service</comment>
+            <comment>Distributed File System for Massive Small Files</comment>
             <version>2.4.1</version>
 	    <requiredServices>
 		<service>HDFS</service>
