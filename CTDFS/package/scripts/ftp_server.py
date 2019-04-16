@@ -10,22 +10,20 @@ from resource_management.libraries.script.script import Script
 from xml_utils import write_xml
 
 class Ftp(Script):
-    FTP_PID_DIR=''
-    superuser=''
     def install(self, env):
         import params
         env.set_params(params)
-        print "********** Install CTDFS_FTP Operation Begin **********" 
+        Logger.info("********** Install CTDFS_FTP Operation Begin **********")
         if not os.path.isdir(params.ctdfs_conf_dir):
             Directory([params.ctdfs_conf_dir],mode=0755,owner=params.superuser,group=params.supergroup,create_parents=True)    
         for filename in params.ctdfs_ftp_conf_filenames:
-            print 'ctdfs_ftp_conf_filename = ', filename
+            Logger.info("ctdfs_ftp_conf_filename = " + filename)
             file_path = params.ctdfs_conf_dir + '/' + filename
-            print 'file_path = ', file_path
+            Logger.info("file_path = " + file_path)
             if not os.path.isfile(file_path):
                 File([file_path],mode=0755,owner=params.superuser,group=params.supergroup)
             prefix_filename = filename[:-4]
-            print 'prefix_filename = ', prefix_filename
+            Logger.info("prefix_filename = " + prefix_filename)
             dict = params.config['configurations'][prefix_filename]
             write_xml(dict, file_path)
             if os.path.isdir(params.ambari_server_conf_dir):            
@@ -35,34 +33,34 @@ class Ftp(Script):
                     Logger.info("rm_server_config_status = " + str(rm_server_config_status))
                     Logger.info("rm_server_config_output = " + rm_server_config_output)   
                 ln_cmd = 'ln -s ' + file_path + ' ' + ftp_target_file_path
-                status,output = commands.getstatusoutput(ln_cmd)
-                print 'Execute ln_cmd status code : ', status
-                print 'Execute ln_cmd output : ', output
-        print "********** Install CTDFS_FTP Operation End **********" 
+                link_toAmbariServer_status,link_toAmbariServer_output = commands.getstatusoutput(ln_cmd)
+                Logger.info("link_toAmbariServer_status = " + str(link_toAmbariServer_status))
+                Logger.info("link_toAmbariServer_output = " + link_toAmbariServer_output) 
+        Logger.info("********** Install CTDFS_FTP Operation End **********")
     def stop(self, env):
         import params
         env.set_params(params)
-        print "********** Stop CTDFS_FTP Operation Begin **********"         
+        Logger.info("********** Stop CTDFS_FTP Operation Begin **********")
         kill_ftp_status,kill_ftp_output = commands.getstatusoutput("cat " + params.ftp_pid_dir + " | xargs kill ")
         Logger.info("kill_ftp_status = " + str(kill_ftp_status))
         Logger.info("kill_ftp_output = " + kill_ftp_output)
         scripts_path = sys.path[0]
         target_ftp_pid = scripts_path + "/../../ftp.pid"
-        rm_ftp_pid_status,rm_ftp_pid_output = commands.getstatusoutput("rm " + target_ftp_pid)
-        Logger.info("rm_ftp_pid_status = " + str(rm_ftp_pid_status))
-        Logger.info("rm_ftp_pid_output = " + rm_ftp_pid_output) 
-        print "********** Stop CTDFS_FTP Operation End **********"
+        rm_target_ftp_pid_status,rm_target_ftp_pid_output = commands.getstatusoutput("rm " + target_ftp_pid)
+        Logger.info("rm_target_ftp_pid_status = " + str(rm_target_ftp_pid_status))
+        Logger.info("rm_target_ftp_pid_output = " + rm_target_ftp_pid_output) 
+        Logger.info("********** Stop CTDFS_FTP Operation End **********")
     def start(self, env):
         import params
         env.set_params(params)
-        print "********** Start CTDFS_FTP Operation Begin **********"        
+        Logger.info("********** Start CTDFS_FTP Operation Begin **********")
         for filename in params.ctdfs_ftp_conf_filenames:
             file_path = params.ctdfs_conf_dir + '/' + filename
-            print 'ctdfs_ftp_conf_filename = ', file_path
+            Logger.info("ctdfs_ftp_conf_filename = " + file_path)
             if not os.path.isfile(file_path):
                 File([file_path],mode=0755,owner=params.superuser,group=params.supergroup)
             prefix_filename = filename[:-4]
-            print 'prefix_filename = ', prefix_filename
+            Logger.info("prefix_filename = " + prefix_filename)
             dict = params.config['configurations'][prefix_filename]
             write_xml(dict, file_path)
             if os.path.isdir(params.ambari_server_conf_dir):
@@ -72,45 +70,29 @@ class Ftp(Script):
                     Logger.info("rm_server_config_status = " + str(rm_server_config_status))
                     Logger.info("rm_server_config_output = " + rm_server_config_output)
                 ln_cmd = 'ln -s ' + file_path + ' ' + ftp_target_file_path
-                status,output = commands.getstatusoutput(ln_cmd)
-                print 'Execute ln_cmd status code : ', status
-                print 'Execute ln_cmd output : ', output          
-        status,output = commands.getstatusoutput("sudo -u " + params.superuser + " nohup sh " + params.start_ftp_dir + " > " + params.start_ftp_log_dir + " \&")
-        print 'Execute start ftp status code: ', status
-        print 'Execute start ftp output: ', output
+                link_toAmbariServer_status,link_toAmbariServer_output = commands.getstatusoutput(ln_cmd)
+                Logger.info("link_toAmbariServer_status = " + str(link_toAmbariServer_status))
+                Logger.info("link_toAmbariServer_output = " + link_toAmbariServer_output)
+        start_ftp_status,start_ftp_output = commands.getstatusoutput("sudo -u " + params.superuser + " nohup sh " + params.start_ftp_dir + " > " + params.start_ftp_log_dir + " \&")
+        Logger.info("start_ftp_status = " + str(start_ftp_status))
+        Logger.info("start_ftp_output = " + start_ftp_output)
         scripts_path = sys.path[0]
         target_ftp_pid = scripts_path + "/../../ftp.pid"
         if not os.path.isfile(target_ftp_pid):
-            ln_pid_status,ln_pid_output = commands.getstatusoutput("ln -s " + params.ftp_pid_dir + " " + target_ftp_pid)
-            Logger.info("ln_pid_status = " + str(ln_pid_status))
-            Logger.info("ln_pid_output = " + ln_pid_output)
-        #global REST_PID_DIR
-        #FTP_PID_DIR = params.ftp_pid_dir
-        #pid = format(FTP_PID_DIR)
-        #print 'FTP_PID_DIR is ',FTP_PID_DIR
-        #print 'pid is ', pid
-        config = Script.get_config()
-        Ftp.superuser = config['configurations']['dfs-site']['dfs.superuser']
-        print "********** Start CTDFS_FTP Operation End **********"
+            ln_target_ftp_pid_status,ln_target_ftp_pid_output = commands.getstatusoutput("ln -s " + params.ftp_pid_dir + " " + target_ftp_pid)
+            Logger.info("ln_target_ftp_pid_status = " + str(ln_target_ftp_pid_status))
+            Logger.info("ln_target_ftp_pid_output = " + ln_target_ftp_pid_output)
+        Logger.info("********** Start CTDFS_FTP Operation End **********")
     def status(self, env):
-        #import params
-        #env.set_params(params)
-        print "********** Status CTDFS_FTP Operation Begin **********"
-        #global FTP_PID_DIR 
-        #pid = format(FTP_PID_DIR)
-        #user_infos=commands.getoutput("cat /etc/passwd|grep ^autodfs:")
-        #user_infos=commands.getoutput("cat /etc/passwd|grep ^" + Ftp.superuser + ":")
-        #user_infos=commands.getoutput("cat /etc/passwd|grep ^" + params.superuser + ":")
-        #user_root_path=user_infos.split(':')[5]
-        #pid = format(user_root_path + "/ctdfs/pid/ftp.pid")
+        Logger.info("********** Status CTDFS_FTP Operation Begin **********")
         scripts_path = sys.path[0]
         target_ftp_pid = scripts_path + "/../../ftp.pid"
         pid = format(target_ftp_pid)
         check_process_status(pid)
-        print "********** Status CTDFS_FTP Operation End **********"
+        Logger.info("********** Status CTDFS_FTP Operation End **********")
     def configure(self, env):
-        print "********** configure CTDFS_FTP Operation Begin **********"
-        print "Do Nothing"
-        print "********** configure CTDFS_FTP Operation End **********"     
+        Logger.info("********** configure CTDFS_FTP Operation Begin **********")
+        Logger.info("Do Nothing")
+        Logger.info("********** configure CTDFS_FTP Operation End **********")  
 if __name__ == "__main__":
     Ftp().execute()
